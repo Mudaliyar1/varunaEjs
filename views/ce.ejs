@@ -6,9 +6,70 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CE Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        .card {
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .card-header {
+            background-color: #0d6efd;
+            color: white;
+            font-weight: bold;
+        }
+        .filter-section {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #dee2e6;
+        }
+        .table-responsive {
+            overflow-x: auto;
+        }
+        .badge-pill {
+            border-radius: 50rem;
+            padding: 0.35em 0.65em;
+        }
+        .table-hover tbody tr:hover {
+            background-color: rgba(13, 110, 253, 0.1);
+        }
+        .action-buttons .btn {
+            margin-bottom: 5px;
+        }
+        .dashboard-stats {
+            margin-bottom: 20px;
+        }
+        .stat-card {
+            padding: 15px;
+            border-radius: 8px;
+            color: white;
+            text-align: center;
+        }
+        .stat-card i {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        .stat-card .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        .stat-card .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        .message-form {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 10px;
+        }
+    </style>
     <script>
         function confirmDelete() {
-            return confirm("Are you sure you want to delete this suggestion?");
+            return confirm("Are you sure you want to delete this message?");
         }
 
         function toggleMessageForm(id) {
@@ -26,120 +87,239 @@
                 row.style.display = cellValue.includes(filterValue) ? "" : "none";
             });
         }
+
+        function toggleColumns() {
+            const selectedView = document.getElementById("columnView").value;
+            const allColumns = document.querySelectorAll('.toggle-column');
+
+            // Hide all columns first
+            allColumns.forEach(col => {
+                col.style.display = 'none';
+            });
+
+            // Show columns based on selected view
+            if (selectedView === 'basic') {
+                document.querySelectorAll('.basic-column').forEach(col => {
+                    col.style.display = '';
+                });
+            } else if (selectedView === 'detailed') {
+                document.querySelectorAll('.detailed-column').forEach(col => {
+                    col.style.display = '';
+                });
+            } else if (selectedView === 'all') {
+                allColumns.forEach(col => {
+                    col.style.display = '';
+                });
+            }
+        }
+
+        // Initialize column view on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            toggleColumns();
+        });
     </script>
 </head>
 
-<body>
+<body class="bg-light">
 
-    <div class="container mt-4">
-        <h1 class="text-center fw-bold mb-4">CE Dashboard</h1>
+    <div class="container-fluid mt-4">
+        <h1 class="text-center fw-bold mb-4"><i class="bi bi-person-workspace me-2"></i>CE Dashboard</h1>
 
         <div class="d-flex justify-content-between mb-3">
-            <h4>Manage Products</h4>
-            <a href="/auth/logout" class="btn btn-danger">Logout</a>
+            <h4><i class="bi bi-tools me-2"></i>Customer Engineer Portal</h4>
+            <a href="/auth/logout" class="btn btn-danger"><i class="bi bi-box-arrow-right me-1"></i>Logout</a>
         </div>
 
-        <!-- 🔹 Filter Section -->
-        <div class="row mb-3">
-            <div class="col-md-4">
-                <select id="filterType" class="form-select">
-                    <option value="name">Name</option>
-                    <option value="mobileNo">Mobile No</option>
-                    <option value="email">Email</option>
-                    <option value="state">State</option>
-                    <option value="city">City</option>
-                    <option value="businessType">Business Type</option>
-                    <option value="findForm">Find Form</option>
-                    <option value="typeOfProducts">Type of Products</option>
-                </select>
+        <!-- Dashboard Stats -->
+        <div class="row dashboard-stats">
+            <div class="col-md-3 mb-3">
+                <div class="stat-card bg-primary">
+                    <i class="bi bi-clipboard-check"></i>
+                    <div class="stat-value"><%= suggestions.length %></div>
+                    <div class="stat-label">Total Assignments</div>
+                </div>
             </div>
-            <div class="col-md-6">
-                <input type="text" id="filterInput" class="form-control" placeholder="Enter value to filter" onkeyup="filterTable()">
+            <div class="col-md-3 mb-3">
+                <div class="stat-card bg-success">
+                    <i class="bi bi-check-circle"></i>
+                    <div class="stat-value"><%= suggestions.filter(s => s.completed).length %></div>
+                    <div class="stat-label">Completed</div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="stat-card bg-warning">
+                    <i class="bi bi-hourglass-split"></i>
+                    <div class="stat-value"><%= suggestions.filter(s => !s.completed).length %></div>
+                    <div class="stat-label">Pending</div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="stat-card bg-info">
+                    <i class="bi bi-chat-dots"></i>
+                    <div class="stat-value"><%= suggestions.filter(s => s.message).length %></div>
+                    <div class="stat-label">Messages Sent</div>
+                </div>
             </div>
         </div>
 
-        <div class="table-responsive">
-            <table class="table table-striped table-hover">
-                <thead class="table-dark">
-                    <tr>
-                        <th>Name</th>
-                        <th>Mobile No</th>
-                        <th>Email</th>
-                        <th>State</th>
-                        <th>City</th>
-                        <th>Business Type</th>
-                        <th>Find Form</th>
-                        <th>Type of Products</th>
-                        <th>Status</th>
-                        <th>Message</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <% suggestions.forEach(suggestion => { %>
-                        <tr>
-                            <td data-filter="name"><%= suggestion.name %></td>
-                            <td data-filter="mobileNo"><%= suggestion.mobileNo %></td>
-                            <td data-filter="email"><%= suggestion.email %></td>
-                            <td data-filter="state"><%= suggestion.state %></td>
-                            <td data-filter="city"><%= suggestion.city %></td>
-                            <td data-filter="businessType"><%= suggestion.businessType %></td>
-                            <td data-filter="findForm"><%= suggestion.findForm %></td>
-                            <td data-filter="typeOfProducts"><%= suggestion.typeOfProducts %></td>
-                            <td>
-                                <form action="/auth/ce/update-status/<%= suggestion._id %>" method="POST">
-                                    <input type="hidden" name="completed" value="<%= !suggestion.completed %>">
-                                    <button type="submit" class="btn <%= suggestion.completed ? 'btn-danger' : 'btn-success' %>">
-                                        <%= suggestion.completed ? "Done" : "Not Done" %>
-                                    </button>
-                                </form>
-                            </td>
-                            <td>
-                                <% if (!suggestion.message) { %>
-                                    <button class="btn btn-primary btn-sm" onclick="toggleMessageForm('<%= suggestion._id %>')">
-                                        💬 Send Message
-                                    </button>
-                                    <form id="messageForm-<%= suggestion._id %>" class="mt-2 d-none" action="/auth/ce/send-message/<%= suggestion._id %>" method="POST">
-                                        <textarea name="message" class="form-control mb-2" rows="2" required></textarea>
-                                        <button type="submit" class="btn btn-success btn-sm">Send</button>
-                                    </form>
-                                <% } else { %>
-                                    <button class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#messageModal-<%= suggestion._id %>">
-                                        📩 View Message
-                                    </button>
-                                    <button class="btn btn-warning btn-sm mt-2" onclick="toggleMessageForm('<%= suggestion._id %>')">
-                                        ✏️ Edit
-                                    </button>
-                                    <form action="/auth/ce/delete-message/<%= suggestion._id %>" method="POST" class="d-inline">
-                                        <button type="submit" class="btn btn-danger btn-sm mt-2" onclick="return confirm('Delete this message?')">
-                                            🗑 Delete
-                                        </button>
-                                    </form>
-                                    <div class="modal fade" id="messageModal-<%= suggestion._id %>" tabindex="-1" aria-labelledby="messageModalLabel-<%= suggestion._id %>" aria-hidden="true">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title" id="messageModalLabel-<%= suggestion._id %>">Message from CE</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <!-- Enhanced Filter Section -->
+        <div class="card">
+            <div class="card-header">Filter & Search</div>
+            <div class="card-body filter-section">
+                <div class="row align-items-end">
+                    <div class="col-md-3 mb-2">
+                        <label class="form-label">Filter By</label>
+                        <select id="filterType" class="form-select">
+                            <option value="name">Name</option>
+                            <option value="mobileNo">Mobile No</option>
+                            <option value="email">Email</option>
+                            <option value="state">State</option>
+                            <option value="city">City</option>
+                            <option value="businessType">Business Type</option>
+                            <option value="findForm">Find Form</option>
+                            <option value="typeOfProducts">Type of Products</option>
+                        </select>
+                    </div>
+                    <div class="col-md-5 mb-2">
+                        <label class="form-label">Search</label>
+                        <input type="text" id="filterInput" class="form-control" placeholder="Enter value to filter" onkeyup="filterTable()">
+                    </div>
+                    <div class="col-md-3 mb-2">
+                        <label class="form-label">Column View</label>
+                        <select id="columnView" class="form-select" onchange="toggleColumns()">
+                            <option value="basic">Basic Info</option>
+                            <option value="detailed">Detailed Info</option>
+                            <option value="all">All Columns</option>
+                        </select>
+                    </div>
+                    <div class="col-md-1 mb-2">
+                        <button class="btn btn-primary w-100" onclick="filterTable()"><i class="bi bi-search"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">Assigned Customer Leads</div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover mb-0">
+                        <thead class="table-dark">
+                            <tr>
+                                <th class="basic-column toggle-column">Name</th>
+                                <th class="basic-column toggle-column">Mobile No</th>
+                                <th class="basic-column toggle-column">Email</th>
+                                <th class="basic-column toggle-column">State</th>
+                                <th class="basic-column toggle-column">City</th>
+                                <th class="detailed-column toggle-column">Business Type</th>
+                                <th class="detailed-column toggle-column">Find Form</th>
+                                <th class="detailed-column toggle-column">Type of Products</th>
+                                <th class="basic-column toggle-column">Status</th>
+                                <th class="basic-column toggle-column">Message</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% suggestions.forEach(suggestion => { %>
+                                <tr>
+                                    <td class="basic-column toggle-column" data-filter="name"><%= suggestion.name %></td>
+                                    <td class="basic-column toggle-column" data-filter="mobileNo"><%= suggestion.mobileNo %></td>
+                                    <td class="basic-column toggle-column" data-filter="email"><%= suggestion.email %></td>
+                                    <td class="basic-column toggle-column" data-filter="state"><%= suggestion.state %></td>
+                                    <td class="basic-column toggle-column" data-filter="city"><%= suggestion.city %></td>
+                                    <td class="detailed-column toggle-column" data-filter="businessType"><%= suggestion.businessType %></td>
+                                    <td class="detailed-column toggle-column" data-filter="findForm"><%= suggestion.findForm %></td>
+                                    <td class="detailed-column toggle-column" data-filter="typeOfProducts"><%= suggestion.typeOfProducts %></td>
+                                    <td class="basic-column toggle-column">
+                                        <form action="/auth/ce/update-status/<%= suggestion._id %>" method="POST">
+                                            <input type="hidden" name="completed" value="<%= !suggestion.completed %>">
+                                            <button type="submit" class="btn <%= suggestion.completed ? 'btn-success' : 'btn-warning' %> btn-sm w-100">
+                                                <% if (suggestion.completed) { %>
+                                                    <i class="bi bi-check-circle me-1"></i>Completed
+                                                <% } else { %>
+                                                    <i class="bi bi-hourglass me-1"></i>Pending
+                                                <% } %>
+                                            </button>
+                                        </form>
+                                    </td>
+                                    <td class="basic-column toggle-column">
+                                        <% if (!suggestion.message) { %>
+                                            <button class="btn btn-primary btn-sm w-100" onclick="toggleMessageForm('<%= suggestion._id %>')">
+                                                <i class="bi bi-chat-dots me-1"></i>Send Message
+                                            </button>
+                                            <form id="messageForm-<%= suggestion._id %>" class="message-form d-none" action="/auth/ce/send-message/<%= suggestion._id %>" method="POST">
+                                                <div class="form-floating mb-2">
+                                                    <textarea name="message" class="form-control" id="messageText-<%= suggestion._id %>" rows="3" style="height: 100px" required></textarea>
+                                                    <label for="messageText-<%= suggestion._id %>">Your message to CRM</label>
                                                 </div>
-                                                <div class="modal-body">
-                                                    <%= suggestion.message %>
+                                                <div class="d-flex justify-content-between">
+                                                    <button type="button" class="btn btn-secondary btn-sm" onclick="toggleMessageForm('<%= suggestion._id %>')">
+                                                        <i class="bi bi-x-circle me-1"></i>Cancel
+                                                    </button>
+                                                    <button type="submit" class="btn btn-success btn-sm">
+                                                        <i class="bi bi-send me-1"></i>Send
+                                                    </button>
                                                 </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                            </form>
+                                        <% } else { %>
+                                            <div class="d-grid gap-2">
+                                                <button class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#messageModal-<%= suggestion._id %>">
+                                                    <i class="bi bi-envelope-open me-1"></i>View Message
+                                                </button>
+                                                <button class="btn btn-warning btn-sm" onclick="toggleMessageForm('<%= suggestion._id %>')">
+                                                    <i class="bi bi-pencil-square me-1"></i>Edit
+                                                </button>
+                                                <form action="/auth/ce/delete-message/<%= suggestion._id %>" method="POST">
+                                                    <button type="submit" class="btn btn-danger btn-sm w-100" onclick="return confirmDelete()">
+                                                        <i class="bi bi-trash me-1"></i>Delete
+                                                    </button>
+                                                </form>
+                                            </div>
+
+                                            <!-- Modal for Viewing Message -->
+                                            <div class="modal fade" id="messageModal-<%= suggestion._id %>" tabindex="-1" aria-labelledby="messageModalLabel-<%= suggestion._id %>" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header bg-info text-white">
+                                                            <h5 class="modal-title" id="messageModalLabel-<%= suggestion._id %>">
+                                                                <i class="bi bi-chat-dots me-2"></i>Your Message
+                                                            </h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <div class="alert alert-light">
+                                                                <%= suggestion.message %>
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                    <form id="messageForm-<%= suggestion._id %>" class="mt-2 d-none" action="/auth/ce/edit-message/<%= suggestion._id %>" method="POST">
-                                        <textarea name="message" class="form-control mb-2" rows="2" required><%= suggestion.message %></textarea>
-                                        <button type="submit" class="btn btn-success btn-sm">Update</button>
-                                    </form>
-                                <% } %>
-                            </td>
-                        </tr>
-                    <% }); %>
-                </tbody>
-            </table>
+
+                                            <!-- Edit Message Form -->
+                                            <form id="messageForm-<%= suggestion._id %>" class="message-form d-none" action="/auth/ce/edit-message/<%= suggestion._id %>" method="POST">
+                                                <div class="form-floating mb-2">
+                                                    <textarea name="message" class="form-control" id="editMessageText-<%= suggestion._id %>" rows="3" style="height: 100px" required><%= suggestion.message %></textarea>
+                                                    <label for="editMessageText-<%= suggestion._id %>">Edit your message</label>
+                                                </div>
+                                                <div class="d-flex justify-content-between">
+                                                    <button type="button" class="btn btn-secondary btn-sm" onclick="toggleMessageForm('<%= suggestion._id %>')">
+                                                        <i class="bi bi-x-circle me-1"></i>Cancel
+                                                    </button>
+                                                    <button type="submit" class="btn btn-success btn-sm">
+                                                        <i class="bi bi-check-circle me-1"></i>Update
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        <% } %>
+                                    </td>
+                                </tr>
+                            <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 

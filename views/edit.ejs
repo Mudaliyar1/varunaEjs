@@ -6,122 +6,241 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Product</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        .form-section {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            background-color: #f8f9fa;
+        }
+        .section-title {
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #0d6efd;
+            border-bottom: 1px solid #dee2e6;
+            padding-bottom: 8px;
+        }
+    </style>
 </head>
 
 <body class="bg-light">
-    <div class="container mt-5">
+    <div class="container mt-4">
         <h2 class="text-center mb-4">Edit Product</h2>
 
+        <div class="d-flex justify-content-between mb-3">
+            <h4><i class="bi bi-pencil-square me-2"></i>Edit Product Details</h4>
+            <div>
+                <a href="/admin" class="btn btn-info me-2"><i class="bi bi-list me-1"></i>Product List</a>
+                <a href="/auth/logout" class="btn btn-danger"><i class="bi bi-box-arrow-right me-1"></i>Logout</a>
+            </div>
+        </div>
+
         <form action="/admin/edit/<%= product._id %>" method="POST" class="card p-4 shadow-lg">
-            <div class="row">
-                <!-- Model Name -->
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Model Name</label>
-                    <input type="text" class="form-control" name="model" value="<%= product.model %>" required>
+            <!-- Basic Information Section -->
+            <div class="form-section">
+                <h5 class="section-title">Basic Information</h5>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Pump ID</label>
+                        <input type="text" class="form-control" name="pump_id" value="<%= product.pump_id || '' %>" placeholder="e.g., VP-001 (Unique identifier)">
+                        <small class="text-muted">Unique identifier for the pump</small>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Model</label>
+                        <input type="text" class="form-control" name="model" value="<%= product.model %>" required placeholder="e.g., VPSP-100 (Required)">
+                        <small class="text-muted">Main model name shown to customers</small>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Pump Application Name</label>
+                        <input type="text" class="form-control" name="pump_app_name" value="<%= product.pump_app_name || '' %>" placeholder="e.g., Domestic, Industrial, Agricultural">
+                        <small class="text-muted">Primary application category</small>
+                    </div>
                 </div>
+            </div>
 
-                <!-- Motor Rating -->
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Motor Rating</label>
-                    <input type="text" class="form-control" name="motor_rating" value="<%= product.motor_rating || '' %>">
+            <!-- Group Information Section -->
+            <div class="form-section">
+                <h5 class="section-title">Group Information</h5>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Group</label>
+                        <input type="text" class="form-control" name="group" value="<%= product.group || '' %>" placeholder="e.g., Submersible, Centrifugal, Jet">
+                        <small class="text-muted">Main product category</small>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Sub Group</label>
+                        <input type="text" class="form-control" name="pump_sub_group" value="<%= product.pump_sub_group || '' %>" placeholder="e.g., SP, CP, JP (Product code)">
+                        <small class="text-muted">Product sub-category code</small>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Sub Group Name</label>
+                        <input type="text" class="form-control" name="pump_sub_group_name" value="<%= product.pump_sub_group_name || '' %>" placeholder="e.g., Borewell, Open Well, Pressure">
+                        <small class="text-muted">Descriptive sub-category name</small>
+                    </div>
                 </div>
+            </div>
 
-                <!-- Stages -->
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Stages</label>
-                    <input type="number" class="form-control" name="stages" value="<%= product.stages || '' %>">
+            <!-- Model Details Section -->
+            <div class="form-section">
+                <h5 class="section-title">Model Details</h5>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Pump Model Name</label>
+                        <input type="text" class="form-control" name="pump_model_name" value="<%= product.pump_model_name || '' %>" placeholder="e.g., V6, Aqua Plus, Turbo">
+                        <small class="text-muted">Specific model variant name</small>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Type</label>
+                        <input type="text" class="form-control" name="type" value="<%= product.type || '' %>" placeholder="e.g., Domestic, Sewage, Slurry">
+                        <small class="text-muted">Used for filtering in product catalog</small>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Stages</label>
+                        <input type="number" class="form-control" name="stages" value="<%= product.stages || '' %>" placeholder="e.g., 1, 2, 3 (Number only)">
+                        <small class="text-muted">Number of impeller stages</small>
+                    </div>
                 </div>
+            </div>
 
-                <!-- Head Meters -->
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Head Meters (comma-separated)</label>
-                    <input type="text" class="form-control" name="head_meters"
-                        value="<%= product.head_meters ? product.head_meters.join(', ') : '' %>">
+            <!-- Performance Section -->
+            <div class="form-section">
+                <h5 class="section-title">Performance Details</h5>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Head Meters (comma separated)</label>
+                        <input type="text" class="form-control" name="head_meters" value="<%= product.head_meters ? product.head_meters.join(', ') : '' %>" placeholder="e.g., 10, 20, 30 (Numbers only)">
+                        <small class="text-muted">Pump head range in meters</small>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Discharge LPM (comma separated)</label>
+                        <input type="text" class="form-control" name="discharge_lpm" value="<%= product.discharge_lpm ? product.discharge_lpm.join(', ') : '' %>" placeholder="e.g., 100, 200, 300 (Numbers only)">
+                        <small class="text-muted">Flow rate in liters per minute</small>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Discharge Type</label>
+                        <input type="text" class="form-control" name="pump_discharge_type" value="<%= product.pump_discharge_type || '' %>" placeholder="e.g., Radial, Axial, Mixed">
+                        <small class="text-muted">Type of discharge flow</small>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Discharge Range</label>
+                        <input type="text" class="form-control" name="pump_discharge_range" value="<%= product.pump_discharge_range || '' %>" placeholder="e.g., 100-300 LPM, 5-15 m³/hr">
+                        <small class="text-muted">Min-max discharge capacity</small>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Rated Head</label>
+                        <input type="text" class="form-control" name="pump_rated_head" value="<%= product.pump_rated_head || '' %>" placeholder="e.g., 30m @ 200LPM">
+                        <small class="text-muted">Optimal head at rated flow</small>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Specific Gravity</label>
+                        <input type="text" class="form-control" name="pump_sp_gr" value="<%= product.pump_sp_gr || '' %>" placeholder="e.g., 1.0, 1.2 (Water = 1.0)">
+                        <small class="text-muted">Fluid density relative to water</small>
+                    </div>
                 </div>
+            </div>
 
-                <!-- Discharge LPM -->
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Discharge LPM (comma-separated)</label>
-                    <input type="text" class="form-control" name="discharge_lpm"
-                        value="<%= product.discharge_lpm ? product.discharge_lpm.join(', ') : '' %>">
+            <!-- Power & Electrical Section -->
+            <div class="form-section">
+                <h5 class="section-title">Power & Electrical Details</h5>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Motor Rating</label>
+                        <input type="text" class="form-control" name="motor_rating" value="<%= product.motor_rating || '' %>" placeholder="e.g., 1HP, 0.75kW, 2.2kW">
+                        <small class="text-muted">Main power rating (displayed prominently)</small>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Power (HP)</label>
+                        <input type="text" class="form-control" name="pump_power_hp" value="<%= product.pump_power_hp || '' %>" placeholder="e.g., 0.5, 1, 2, 5">
+                        <small class="text-muted">Horsepower rating</small>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Power (kW)</label>
+                        <input type="text" class="form-control" name="pump_power_kw" value="<%= product.pump_power_kw || '' %>" placeholder="e.g., 0.37, 0.75, 1.5, 3.7">
+                        <small class="text-muted">Kilowatt rating</small>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Voltage</label>
+                        <input type="text" class="form-control" name="pump_voltage" value="<%= product.pump_voltage || product.voltage || '' %>" placeholder="e.g., 230V, 415V, 380-415V">
+                        <small class="text-muted">Operating voltage</small>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Frequency (Hz)</label>
+                        <input type="text" class="form-control" name="pump_frequency" value="<%= product.pump_frequency || product.hertz || '' %>" placeholder="e.g., 50, 60, 50/60">
+                        <small class="text-muted">Operating frequency</small>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Power Supply</label>
+                        <input type="text" class="form-control" name="pump_power_supply" value="<%= product.pump_power_supply || product.power_supply || '' %>" placeholder="e.g., Single Phase, Three Phase">
+                        <small class="text-muted">Type of electrical supply</small>
+                    </div>
                 </div>
+            </div>
 
-                <!-- Input -->
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Input</label>
-                    <input type="text" class="form-control" name="input" value="<%= product.input || '' %>">
+            <!-- Physical Specifications Section -->
+            <div class="form-section">
+                <h5 class="section-title">Physical Specifications</h5>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Suction Size</label>
+                        <input type="text" class="form-control" name="suction_size" value="<%= product.suction_size || '' %>" placeholder="e.g., 25mm, 1", 40mm">
+                        <small class="text-muted">Inlet pipe diameter</small>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Delivery Size</label>
+                        <input type="text" class="form-control" name="pump_del_size" value="<%= product.pump_del_size || product.delivery_size || '' %>" placeholder="e.g., 25mm, 1", 32mm">
+                        <small class="text-muted">Outlet pipe diameter</small>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Priming Type</label>
+                        <input type="text" class="form-control" name="pump_priming_type" value="<%= product.pump_priming_type || '' %>" placeholder="e.g., Self-priming, Non-priming">
+                        <small class="text-muted">How pump is primed</small>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Material</label>
+                        <input type="text" class="form-control" name="material" value="<%= product.material || '' %>" placeholder="e.g., Cast Iron, Stainless Steel, Bronze">
+                        <small class="text-muted">Main construction material</small>
+                    </div>
                 </div>
+            </div>
 
-                <!-- Material of Construction -->
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Material of Construction</label>
-                    <input type="text" class="form-control" name="material" value="<%= product.material || '' %>">
-                </div>
-
-                <!-- Description -->
-                <div class="col-md-12 mb-3">
-                    <label class="form-label">Description</label>
-                    <textarea class="form-control" name="description" rows="3"><%= product.description || '' %></textarea>
-                </div>
-
-                <!-- Salient Features -->
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Salient Features (comma-separated)</label>
-                    <input type="text" class="form-control" name="salient_features"
-                        value="<%= product.salient_features ? product.salient_features.join(', ') : '' %>">
-                </div>
-
-                <!-- Applications -->
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Applications (comma-separated)</label>
-                    <input type="text" class="form-control" name="applications"
-                        value="<%= product.applications ? product.applications.join(', ') : '' %>">
-                </div>
-
-                <!-- New Fields -->
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Group</label>
-                    <input type="text" class="form-control" name="group" value="<%= product.group || '' %>">
-                </div>
-
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Hertz</label>
-                    <input type="text" class="form-control" name="hertz" value="<%= product.hertz || '' %>">
-                </div>
-
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Suction Size</label>
-                    <input type="text" class="form-control" name="suction_size" value="<%= product.suction_size || '' %>">
-                </div>
-
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Delivery Size</label>
-                    <input type="text" class="form-control" name="delivery_size" value="<%= product.delivery_size || '' %>">
-                </div>
-
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Voltage</label>
-                    <input type="text" class="form-control" name="voltage" value="<%= product.voltage || '' %>">
-                </div>
-
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Power Supply</label>
-                    <input type="text" class="form-control" name="power_supply" value="<%= product.power_supply || '' %>">
-                </div>
-
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Type</label>
-                    <input type="text" class="form-control" name="type" value="<%= product.type || '' %>">
+            <!-- Additional Information Section -->
+            <div class="form-section">
+                <h5 class="section-title">Additional Information</h5>
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <label class="form-label">Description</label>
+                        <textarea class="form-control" name="description" rows="3" placeholder="Enter a detailed product description (shown on product page)"><%= product.description || '' %></textarea>
+                        <small class="text-muted">Comprehensive description of the product's features and benefits</small>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Image Link</label>
+                        <input type="text" class="form-control" name="input" value="<%= product.input || '' %>" placeholder="e.g., https://example.com/image.jpg or /images/product.jpg">
+                        <small class="text-muted">Main product image URL (absolute or relative path)</small>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Salient Features (comma separated)</label>
+                        <input type="text" class="form-control" name="salient_features" value="<%= product.salient_features ? product.salient_features.join(', ') : '' %>" placeholder="e.g., Energy Efficient, Low Noise, Corrosion Resistant">
+                        <small class="text-muted">Key selling points (displayed as bullet points)</small>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Applications (comma separated)</label>
+                        <input type="text" class="form-control" name="applications" value="<%= product.applications ? product.applications.join(', ') : '' %>" placeholder="e.g., Domestic Water Supply, Agriculture, Industrial Cooling">
+                        <small class="text-muted">Suitable use cases for this product</small>
+                    </div>
                 </div>
             </div>
 
             <!-- Submit & Cancel Buttons -->
-            <div class="d-flex justify-content-between">
-                <button type="submit" class="btn btn-primary">Update Product</button>
-                <a href="/admin" class="btn btn-secondary">Cancel</a>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-3">
+                <a href="/admin" class="btn btn-secondary me-md-2"><i class="bi bi-x-circle me-1"></i>Cancel</a>
+                <button type="submit" class="btn btn-primary"><i class="bi bi-check-circle me-1"></i>Update Product</button>
             </div>
         </form>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

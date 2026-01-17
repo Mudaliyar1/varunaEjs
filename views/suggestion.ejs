@@ -73,22 +73,625 @@
         .hidden {
             display: none;
         }
+
+        /* Enhanced styles for the suggestion form */
+        .suggestionFormDiv {
+            display: flex;
+            flex-wrap: wrap;
+            flex-direction: column;
+            max-width: 800px;
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .form-section {
+            margin-bottom: 30px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 20px;
+        }
+
+        .form-section h4 {
+            color: #333;
+            margin-bottom: 15px;
+            font-weight: 600;
+            border-left: 4px solid red;
+            padding-left: 10px;
+        }
+
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 0 -10px;
+        }
+
+        .form-group {
+            flex: 1 0 calc(50% - 20px);
+            margin: 0 10px 15px;
+            min-width: 200px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .form-control:focus {
+            border-color: red;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(255,0,0,0.2);
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #555;
+        }
+
+        /* Pump Requirements Section */
+        .pump-requirements {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .range-inputs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .range-input {
+            flex: 1;
+            position: relative;
+        }
+
+        .range-input input {
+            width: 100%;
+            padding: 10px;
+            padding-right: 30px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .range-input span {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #777;
+            font-size: 12px;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 20px;
+            margin-top: 10px;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .submit-btn {
+            background-color: red;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 20px;
+            align-self: flex-start;
+        }
+
+        .submit-btn:hover {
+            background-color: #d00;
+        }
+
+        .calculator-toggle {
+            color: #0066cc;
+            text-decoration: underline;
+            cursor: pointer;
+            margin-left: 10px;
+            font-size: 14px;
+        }
+
+        /* Styles for selected dropdown items */
+        select option:checked,
+        select option:selected {
+            background-color: #dc3545 !important;
+            color: white !important;
+            font-weight: bold;
+        }
+
+        /* Style for dropdown with a selected value */
+        select.has-value {
+            border-color: #28a745;
+            background-color: #f8fff8;
+            color: #000 !important;
+            font-weight: bold;
+        }
+
+        /* Fix for dropdown text visibility */
+        select {
+            color: #000;
+            background-color: #fff;
+            font-size: 16px;
+            padding: 8px 12px;
+            appearance: auto; /* Ensure native dropdown appearance */
+            -webkit-appearance: auto;
+            -moz-appearance: auto;
+        }
+
+        /* Selected value display */
+        .selected-value {
+            margin-top: 5px;
+            font-weight: bold;
+            color: #28a745;
+            min-height: 20px;
+            font-size: 14px;
+        }
+
+        /* Style for radio buttons */
+        .radio-option input[type="radio"]:checked + label {
+            font-weight: bold;
+            color: #dc3545;
+        }
+
+        /* Loading indicator styles */
+        .loading-indicator {
+            display: inline-block;
+            width: 1em;
+            height: 1em;
+            border: 2px solid rgba(0, 0, 0, 0.1);
+            border-top: 2px solid #dc3545;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 5px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Loading state for form section */
+        .pump-requirements.loading {
+            position: relative;
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        .pump-requirements.loading::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.5);
+            z-index: 1;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .form-group {
+                flex: 1 0 100%;
+            }
+        }
     </style>
     <script>
         $(document).ready(function () {
+            // Navigation and UI interactions
             $("#hamburger").click(function () {
                 $("#hamburger-slide").show();
                 $("#hamburger-slide").css({ "height": "150vh", "width": "100vw", "left": "0px", "background-color": "white", "position": "absolute", "top": "-70px", "z-index": "10" });
             });
 
             $("#cross-icon").click(function () {
-                // $("#hamburger").hide();
                 $("#hamburger-slide").slideUp();
-                // $("#hamburger-slide").css({ "display": "none" });
-                // $("#hamburger").show();
             });
 
+            // Enhanced product type selection with dynamic range values and dropdown population
+            $("#typeOfProducts").on("change", function() {
+                const selectedType = $(this).val();
+                if (!selectedType) {
+                    // Reset all fields if no type is selected
+                    resetFilterFields();
+                    return;
+                }
+
+                // Show loading indicators
+                $("#typeLoadingIndicator").show();
+                $("#headMin, #headMax, #flowMin, #flowMax").attr("placeholder", "Loading...");
+                $("#pipe-size, #phase").html('<option value="">Loading...</option>');
+                $("#freq50, #freq60").prop('checked', false);
+
+                // Add loading class to the form section
+                $(".pump-requirements").addClass("loading");
+
+                // Fetch product details for the selected type
+                $.ajax({
+                    url: `/get-product-details?type=${selectedType}`,
+                    method: "GET",
+                    dataType: "json",
+                    success: function(data) {
+                        // Hide loading indicators
+                        $("#typeLoadingIndicator").hide();
+                        $(".pump-requirements").removeClass("loading");
+
+                        if (data.error) {
+                            alert(data.error);
+                            resetFilterFields();
+                            return;
+                        }
+
+                        // Update placeholders with min-max values
+                        $("#headMin").attr("placeholder", `${data.head.min || 0}`);
+                        $("#headMax").attr("placeholder", `${data.head.max || 100}`);
+                        $("#flowMin").attr("placeholder", `${data.flow.min || 0}`);
+                        $("#flowMax").attr("placeholder", `${data.flow.max || 100}`);
+
+                        // Pre-fill with suggested values
+                        $("#headMin").val(data.head.min || "");
+                        $("#headMax").val(data.head.max || "");
+                        $("#flowMin").val(data.flow.min || "");
+                        $("#flowMax").val(data.flow.max || "");
+
+                        // Populate pipe size dropdown
+                        populateDropdown("#pipe-size", data.metadata.pipeSizes, "Select pipe size");
+
+                        // Populate phase dropdown
+                        populateDropdown("#phase", data.metadata.phases, "Select phase");
+
+                        // Set frequency radio buttons
+                        if (data.metadata.frequencies && data.metadata.frequencies.length > 0) {
+                            // Clear existing radio buttons
+                            $(".radio-group").empty();
+
+                            // Create new radio buttons for each frequency
+                            data.metadata.frequencies.forEach((freq, index) => {
+                                const radioHtml = `
+                                    <div class="radio-option">
+                                        <input type="radio" id="freq${freq}" name="Frequency" value="${freq}Hz" required ${index === 0 ? 'checked' : ''}>
+                                        <label for="freq${freq}">${freq}Hz</label>
+                                    </div>
+                                `;
+                                $(".radio-group").append(radioHtml);
+                            });
+                        } else {
+                            // If no frequencies found, add default options
+                            $(".radio-group").html(`
+                                <div class="radio-option">
+                                    <input type="radio" id="freq50" name="Frequency" value="50Hz" required checked>
+                                    <label for="freq50">50Hz</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" id="freq60" name="Frequency" value="60Hz" required>
+                                    <label for="freq60">60Hz</label>
+                                </div>
+                            `);
+                        }
+
+                        // Display the selected product type in the dropdown
+                        $("#typeOfProducts option[value='" + selectedType + "']").prop('selected', true);
+                        updateDropdownStyle($("#typeOfProducts"));
+
+                        console.log("Successfully loaded filter options for type:", selectedType);
+                    },
+                    error: function(xhr, status, error) {
+                        // Hide loading indicators
+                        $("#typeLoadingIndicator").hide();
+                        $(".pump-requirements").removeClass("loading");
+
+                        console.error("Error fetching product details:", error);
+                        alert("Failed to load product details. Please try again.");
+                        resetFilterFields();
+                    }
+                });
+            });
+
+            // Helper function to populate dropdowns
+            function populateDropdown(selector, options, defaultText) {
+                const dropdown = $(selector);
+                const currentValue = dropdown.val(); // Store current value to preserve selection if possible
+
+                dropdown.empty();
+                dropdown.append(`<option value="">${defaultText}</option>`);
+
+                if (options && options.length > 0) {
+                    options.forEach(option => {
+                        if (option) { // Only add non-empty options
+                            dropdown.append(`<option value="${option}">${option}</option>`);
+                        }
+                    });
+                }
+
+                // Try to restore the previous selection if it exists in the new options
+                if (currentValue && dropdown.find(`option[value="${currentValue}"]`).length > 0) {
+                    dropdown.val(currentValue);
+                }
+
+                // Add 'has-value' class if a value is selected
+                updateDropdownStyle(dropdown);
+            }
+
+            // Helper function to update dropdown styling based on selection
+            function updateDropdownStyle(dropdown) {
+                const id = dropdown.attr('id');
+                const displayElement = $('#' + id + '-display');
+
+                if (dropdown.val()) {
+                    dropdown.addClass('has-value');
+
+                    // Update the display element with the selected text
+                    const selectedText = dropdown.find('option:selected').text();
+                    if (displayElement.length) {
+                        displayElement.text('Selected: ' + selectedText);
+                    }
+
+                    // Also update the dropdown's title attribute for tooltip on hover
+                    dropdown.attr('title', selectedText);
+                } else {
+                    dropdown.removeClass('has-value');
+                    if (displayElement.length) {
+                        displayElement.text('');
+                    }
+                    dropdown.attr('title', '');
+                }
+            }
+
+            // Helper function to reset all filter fields
+            function resetFilterFields() {
+                $("#headMin, #headMax, #flowMin, #flowMax").val("").attr("placeholder", "Enter value");
+                populateDropdown("#pipe-size", [], "Select pipe size");
+                populateDropdown("#phase", [], "Select phase");
+                $("#freq50, #freq60").prop('checked', false);
+
+                // Clear the display elements
+                $("#typeOfProducts-display, #pipe-size-display, #phase-display").text("");
+
+                // Remove has-value class from all dropdowns
+                $("#typeOfProducts, #pipe-size, #phase").removeClass("has-value").attr("title", "");
+            }
+
+            // Form validation and submission
+            $("#myForm").on("submit", function(e) {
+                // Get values from form fields
+                const headMin = $("#headMin").val().trim();
+                const headMax = $("#headMax").val().trim();
+                const flowMin = $("#flowMin").val().trim();
+                const flowMax = $("#flowMax").val().trim();
+                const productType = $("#typeOfProducts").val();
+                const pipeSize = $("#pipe-size").val();
+                const phase = $("#phase").val();
+                const frequency = $("input[name='Frequency']:checked").val();
+
+                // Store form values in session storage for persistence
+                try {
+                    const formData = {
+                        productType,
+                        headMin,
+                        headMax,
+                        flowMin,
+                        flowMax,
+                        pipeSize,
+                        phase,
+                        frequency
+                    };
+                    sessionStorage.setItem('pumpFilterData', JSON.stringify(formData));
+                } catch (err) {
+                    console.error("Error saving form data to session storage:", err);
+                }
+
+                // Validate required fields
+                if (!headMin || !headMax || !flowMin || !flowMax || !productType) {
+                    e.preventDefault();
+                    alert("Please fill in all required fields in the Pump Requirements section.");
+                    return false;
+                }
+
+                if (!pipeSize) {
+                    e.preventDefault();
+                    alert("Please select a Pipe Size.");
+                    return false;
+                }
+
+                if (!phase) {
+                    e.preventDefault();
+                    alert("Please select a Phase.");
+                    return false;
+                }
+
+                if (!frequency) {
+                    e.preventDefault();
+                    alert("Please select a Frequency.");
+                    return false;
+                }
+
+                // Validate numeric values
+                if (isNaN(headMin) || isNaN(headMax) || isNaN(flowMin) || isNaN(flowMax)) {
+                    e.preventDefault();
+                    alert("Head and Flow values must be numbers.");
+                    return false;
+                }
+
+                // Validate min <= max
+                if (parseFloat(headMin) > parseFloat(headMax)) {
+                    e.preventDefault();
+                    alert("Minimum Head cannot be greater than Maximum Head.");
+                    return false;
+                }
+
+                if (parseFloat(flowMin) > parseFloat(flowMax)) {
+                    e.preventDefault();
+                    alert("Minimum Flow cannot be greater than Maximum Flow.");
+                    return false;
+                }
+
+                // Set combined values for server processing
+                $("#head").val(headMin + "-" + headMax);
+                $("#flow").val(flowMin + "-" + flowMax);
+
+                // Log the form submission for debugging
+                console.log("Submitting form with values:", {
+                    productType,
+                    head: headMin + "-" + headMax,
+                    flow: flowMin + "-" + flowMax,
+                    pipeSize,
+                    phase,
+                    frequency
+                });
+
+                return true;
+            });
+
+            // Add change event listeners for styling updates
+            $("#pipe-size, #phase, #typeOfProducts").on("change", function() {
+                updateDropdownStyle($(this));
+            });
+
+            // Load saved form data on page load
+            $(document).ready(function() {
+                // Add loading indicator next to product type dropdown
+                $("label[for='typeOfProducts']").append('<span id="typeLoadingIndicator" class="loading-indicator" style="display:none;"></span>');
+
+                // Initialize dropdown styling
+                $("#pipe-size, #phase, #typeOfProducts").each(function() {
+                    updateDropdownStyle($(this));
+                });
+
+                // Force update of dropdown displays after a short delay
+                setTimeout(function() {
+                    $("#pipe-size, #phase, #typeOfProducts").each(function() {
+                        if ($(this).val()) {
+                            const id = $(this).attr('id');
+                            const displayElement = $('#' + id + '-display');
+                            const selectedText = $(this).find('option:selected').text();
+
+                            if (displayElement.length && selectedText) {
+                                displayElement.text('Selected: ' + selectedText);
+                                $(this).addClass('has-value');
+                            }
+                        }
+                    });
+                }, 500);
+
+                try {
+                    const savedData = sessionStorage.getItem('pumpFilterData');
+                    if (savedData) {
+                        const formData = JSON.parse(savedData);
+
+                        // If we have a product type, trigger the change event to load related data
+                        if (formData.productType) {
+                            // Show loading indicator
+                            $("#typeLoadingIndicator").show();
+
+                            $("#typeOfProducts").val(formData.productType).trigger('change');
+
+                            // Set the values after a short delay to ensure the AJAX call completes
+                            setTimeout(function() {
+                                if (formData.headMin) $("#headMin").val(formData.headMin);
+                                if (formData.headMax) $("#headMax").val(formData.headMax);
+                                if (formData.flowMin) $("#flowMin").val(formData.flowMin);
+                                if (formData.flowMax) $("#flowMax").val(formData.flowMax);
+                                if (formData.pipeSize) $("#pipe-size").val(formData.pipeSize).trigger('change');
+                                if (formData.phase) $("#phase").val(formData.phase).trigger('change');
+                                if (formData.frequency) {
+                                    const freqId = formData.frequency.replace('Hz', '');
+                                    $("#freq" + freqId).prop('checked', true);
+                                }
+
+                                // Hide loading indicator
+                                $("#typeLoadingIndicator").hide();
+                            }, 1000);
+                        }
+                    }
+                } catch (err) {
+                    console.error("Error loading saved form data:", err);
+                    $("#typeLoadingIndicator").hide();
+                }
+            });
         });
+
+        // Calculator functions
+        function toggleCalculator() {
+            const calculator = document.getElementById("calculator");
+            if (calculator.style.display === "none" || !calculator.style.display) {
+                calculator.style.display = "block";
+            } else {
+                calculator.style.display = "none";
+            }
+        }
+
+        function calculate() {
+            // Get input values
+            const flowRate = parseFloat(document.getElementById("flowRate").value);
+            const pipeLength = parseFloat(document.getElementById("pipeLength").value);
+            const pipeDiameter = parseFloat(document.getElementById("pipeDiameter").value);
+            const totalLift = parseFloat(document.getElementById("totalLift").value);
+            const miscHeadLoss = parseFloat(document.getElementById("miscHeadLoss").value);
+            const fitting45Count = parseInt(document.getElementById("fitting45").value);
+            const fitting90Count = parseInt(document.getElementById("fitting90").value);
+            const fittingTeeCount = parseInt(document.getElementById("fittingTee").value);
+
+            // Validate inputs
+            if (isNaN(flowRate) || isNaN(pipeLength) || isNaN(pipeDiameter) || isNaN(totalLift)) {
+                document.getElementById("results").innerHTML = "<p class='text-danger'>Please fill in all required fields with valid numbers.</p>";
+                return;
+            }
+
+            // Calculate friction loss in pipe (using Hazen-Williams formula)
+            const c = 150; // Pipe roughness coefficient (PVC)
+            const frictionLoss = 4.52 * (flowRate ** 1.85) * (pipeLength / (c ** 1.85 * pipeDiameter ** 4.87));
+
+            // Calculate fitting losses
+            const fitting45Loss = fitting45Count * (0.2 * (flowRate ** 2) / (2 * 32.2 * (pipeDiameter / 12) ** 4));
+            const fitting90Loss = fitting90Count * (0.9 * (flowRate ** 2) / (2 * 32.2 * (pipeDiameter / 12) ** 4));
+            const fittingTeeLoss = fittingTeeCount * (1.8 * (flowRate ** 2) / (2 * 32.2 * (pipeDiameter / 12) ** 4));
+
+            // Calculate total head
+            const totalFittingLoss = fitting45Loss + fitting90Loss + fittingTeeLoss;
+            const totalHead = totalLift + frictionLoss + totalFittingLoss + miscHeadLoss;
+
+            // Convert to meters for our form
+            const totalHeadMeters = totalHead * 0.3048;
+
+            // Display results
+            document.getElementById("results").innerHTML = `
+                <div class="alert alert-success">
+                    <h4>Calculation Results:</h4>
+                    <p><strong>Total Head Required:</strong> ${totalHead.toFixed(2)} feet (${totalHeadMeters.toFixed(2)} meters)</p>
+                    <p><strong>Friction Loss in Pipe:</strong> ${frictionLoss.toFixed(2)} feet</p>
+                    <p><strong>Fitting Losses:</strong> ${totalFittingLoss.toFixed(2)} feet</p>
+                </div>
+                <button class="btn btn-primary" onclick="useCalculatedValues(${totalHeadMeters.toFixed(2)})">Use These Values</button>
+            `;
+        }
+
+        function useCalculatedValues(headValue) {
+            // Set the calculated head value in the form
+            const headMin = Math.max(0, headValue * 0.9).toFixed(2); // 10% lower than calculated
+            const headMax = (headValue * 1.1).toFixed(2); // 10% higher than calculated
+
+            document.getElementById("headMin").value = headMin;
+            document.getElementById("headMax").value = headMax;
+
+            // Close calculator
+            toggleCalculator();
+        }
     </script>
 </head>
 
@@ -104,199 +707,231 @@
 
         <!-- main code starts from here -->
 
-        <main id="suggestion-file"
-            style="display: flex; flex-wrap: wrap; align-items: center; justify-content: center;">
+        <main id="suggestion-file" style="display: flex; flex-wrap: wrap; align-items: center; justify-content: center;">
 
             <form action="/suggestionForm" id="myForm" method="post" class="suggestionFormDiv">
-
                 <input type="hidden" name="access_key" value="1ef959d5-c666-4263-9c17-11e080ffa78d">
 
-                <br><br><br>
-                <h4 style="padding: 0px 10px;">Personal Information*</h4>
-                <div style="display: flex; flex-wrap: wrap;">
-                    <input type="text" placeholder="Name" required name="Name">
-                    <input type="number" placeholder="Contact No." name="Mobile-No" required>
-                    <input type="email" placeholder="Email id." name="Email" required>
-                    <input type="text" placeholder="State" name="State" required>
-                    <input type="text" placeholder="City" name="City" required>
-                    <input type="text" placeholder="District" name="District" required>
-
-                    <input list="Buisness-Type" name="Buisness-Type" placeholder="Business Type" required>
-                    <datalist id="Buisness-Type">
-                        <option value="Farmer">Farmer</option>
-                        <option value="Residential">Residential</option>
-                    </datalist>
-
-                    <input list="Find-form" name="Find-form" placeholder="Find From" required>
-                    <datalist id="Find-form">
-                        <option value="Farmer">Farmer</option>
-                        <option value="Residential">Residential</option>
-                    </datalist>
-                </div>
-
-                <br><br><br>
-                <h4 style="padding: 0px 10px;">Requirement Of Pumps*</h4>
-                <br>
-
-                <label for="typeOfProducts">Select Product Type:</label>
-                <select id="typeOfProducts" name="Type-Of-Products" required>
-                    <option value="">-- Select Product Type --</option>
-                    <% productTypes.forEach(type=> { %>
-                        <option value="<%= type %>">
-                            <%= type %>
-                        </option>
-                        <% }); %>
-                </select>
-
-                <!-- Modified head input with hidden field for original name -->
-                <div style="display: flex; align-items: center;">
-                    <div style="display: flex; width: 200px;">
-                        <input type="text" id="headMin" placeholder="Min (Head)" required style="width: 100px; margin-right: 5px;">
-                        <input type="text" id="headMax" placeholder="Max (Head)" required style="width: 100px;">
+                <!-- Personal Information Section -->
+                <div class="form-section">
+                    <h4>Personal Information*</h4>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="name">Full Name</label>
+                            <input type="text" id="name" class="form-control" placeholder="Enter your name" required name="Name">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="mobile">Contact Number</label>
+                            <input type="number" id="mobile" class="form-control" placeholder="Enter your mobile number" name="Mobile-No" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="email">Email Address</label>
+                            <input type="email" id="email" class="form-control" placeholder="Enter your email" name="Email" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="state">State</label>
+                            <input type="text" id="state" class="form-control" placeholder="Enter your state" name="State" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="city">City</label>
+                            <input type="text" id="city" class="form-control" placeholder="Enter your city" name="City" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="district">District</label>
+                            <input type="text" id="district" class="form-control" placeholder="Enter your district" name="District" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="businessType">Business Type</label>
+                            <input list="Buisness-Type" id="businessType" class="form-control" name="Buisness-Type" placeholder="Select business type" required>
+                            <datalist id="Buisness-Type">
+                                <option value="Farmer">Farmer</option>
+                                <option value="Residential">Residential</option>
+                                <option value="Commercial">Commercial</option>
+                                <option value="Industrial">Industrial</option>
+                            </datalist>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="findForm">How did you find us?</label>
+                            <input list="Find-form" id="findForm" class="form-control" name="Find-form" placeholder="Select option" required>
+                            <datalist id="Find-form">
+                                <option value="Search Engine">Search Engine</option>
+                                <option value="Social Media">Social Media</option>
+                                <option value="Referral">Referral</option>
+                                <option value="Advertisement">Advertisement</option>
+                            </datalist>
+                        </div>
                     </div>
-                    <input type="hidden" id="head" name="Head" required>
-                    <a href="#calcNavigation" style="text-decoration: none;"><span id="calcNavigation">?</span></a>
                 </div>
 
-                <!-- Modified flow input with hidden field for original name -->
-                <div style="display: flex; width: 200px;">
-                    <input type="text" id="flowMin" placeholder="Min (Flow)" required style="width: 100px; margin-right: 5px;">
-                    <input type="text" id="flowMax" placeholder="Max (Flow)" required style="width: 100px;">
+                <!-- Pump Requirements Section -->
+                <div class="form-section">
+                    <h4>Requirement Of Pumps*</h4>
+                    <div class="pump-requirements">
+                        <div class="form-group">
+                            <label class="form-label" for="typeOfProducts">Select Product Type:</label>
+                            <select id="typeOfProducts" class="form-control" name="Type-Of-Products" required>
+                                <option value="" selected disabled>-- Select Product Type --</option>
+                                <% productTypes.forEach(type=> { %>
+                                    <option value="<%= type %>"><%= type %></option>
+                                <% }); %>
+                            </select>
+                            <div class="selected-value" id="typeOfProducts-display"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Head Range (meters):
+                                <a href="javascript:void(0)" class="calculator-toggle" onclick="toggleCalculator()">Need help calculating?</a>
+                            </label>
+                            <div class="range-inputs">
+                                <div class="range-input">
+                                    <input type="text" id="headMin" placeholder="Min value" required>
+                                    <span>Min</span>
+                                </div>
+                                <div class="range-input">
+                                    <input type="text" id="headMax" placeholder="Max value" required>
+                                    <span>Max</span>
+                                </div>
+                            </div>
+                            <input type="hidden" id="head" name="Head" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Flow Range (LPM):</label>
+                            <div class="range-inputs">
+                                <div class="range-input">
+                                    <input type="text" id="flowMin" placeholder="Min value" required>
+                                    <span>Min</span>
+                                </div>
+                                <div class="range-input">
+                                    <input type="text" id="flowMax" placeholder="Max value" required>
+                                    <span>Max</span>
+                                </div>
+                            </div>
+                            <input type="hidden" id="flow" name="Flow" required>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label" for="pipe-size">Pipe Size:</label>
+                                <select id="pipe-size" class="form-control" required name="pipe-size">
+                                    <option value="" selected disabled>Select pipe size</option>
+                                    <% if (typeof allPipeSizes !== 'undefined' && allPipeSizes.length > 0) { %>
+                                        <% allPipeSizes.forEach(size => { %>
+                                            <option value="<%= size %>"><%= size %> mm</option>
+                                        <% }); %>
+                                    <% } else { %>
+                                        <option value="110">110 mm</option>
+                                        <option value="160">160 mm</option>
+                                        <option value="200">200 mm</option>
+                                    <% } %>
+                                </select>
+                                <div class="selected-value" id="pipe-size-display"></div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="phase">Phase:</label>
+                                <select id="phase" class="form-control" required name="Phase">
+                                    <option value="" selected disabled>Select phase</option>
+                                    <% if (typeof phases !== 'undefined' && phases.length > 0) { %>
+                                        <% phases.forEach(phase => { %>
+                                            <option value="<%= phase %>"><%= phase %></option>
+                                        <% }); %>
+                                    <% } else { %>
+                                        <option value="Single Phase">Single Phase</option>
+                                        <option value="Multi-dimension Phase">Multi-dimension Phase</option>
+                                    <% } %>
+                                </select>
+                                <div class="selected-value" id="phase-display"></div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Frequency:</label>
+                            <div class="radio-group">
+                                <% if (typeof frequencies !== 'undefined' && frequencies.length > 0) { %>
+                                    <% frequencies.forEach((freq, index) => { %>
+                                        <div class="radio-option">
+                                            <input type="radio" id="freq<%= freq %>" name="Frequency" value="<%= freq %>Hz" required <%= index === 0 ? 'checked' : '' %>>
+                                            <label for="freq<%= freq %>"><%= freq %>Hz</label>
+                                        </div>
+                                    <% }); %>
+                                <% } else { %>
+                                    <div class="radio-option">
+                                        <input type="radio" id="freq50" name="Frequency" value="50Hz" required>
+                                        <label for="freq50">50Hz</label>
+                                    </div>
+                                    <div class="radio-option">
+                                        <input type="radio" id="freq60" name="Frequency" value="60Hz" required>
+                                        <label for="freq60">60Hz</label>
+                                    </div>
+                                <% } %>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="submit-btn" type="submit">Find Matching Products</button>
                 </div>
-                <input type="hidden" id="flow" name="Flow" required>
-
-                <script>
-                    document.getElementById("typeOfProducts").addEventListener("change", function () {
-                        const selectedType = this.value;
-
-                        if (selectedType) {
-                            fetch(`/get-product-details?type=${selectedType}`)
-                                .then(response => response.json())
-                                .then(data => {
-                                    if (data.error) {
-                                        alert(data.error);
-                                    } else {
-                                        document.getElementById("headMin").placeholder = `${data.head.min} (min)`;
-                                        document.getElementById("headMax").placeholder = `${data.head.max} (max)`;
-                                        document.getElementById("flowMin").placeholder = `${data.flow.min} (min)`;
-                                        document.getElementById("flowMax").placeholder = `${data.flow.max} (max)`;
-                                    }
-                                })
-                                .catch(error => console.error("Error fetching product details:", error));
-                        }
-                    });
-
-                    // Add form submit handler to combine min and max values
-                    document.getElementById("myForm").addEventListener("submit", function(e) {
-                        const headMin = document.getElementById("headMin").value;
-                        const headMax = document.getElementById("headMax").value;
-                        const flowMin = document.getElementById("flowMin").value;
-                        const flowMax = document.getElementById("flowMax").value;
-                        
-                        if (!headMin || !headMax || !flowMin || !flowMax) {
-                            e.preventDefault();
-                            alert("Please add Min and Max Both Values");
-                            return;
-                        }
-                        
-                        // Combine values in the format the server expects
-                        document.getElementById("head").value = headMin + " - " + headMax;
-                        document.getElementById("flow").value = flowMin + " - " + flowMax;
-                    });
-                </script>
-
-                <select id="pipe-size" required name="pipe-size">
-                    <option value="pipe-size">Pipe-size</option>
-                    <option value="110">110(mm)</option>
-                    <option value="160">160(mm)</option>
-                    <option value="200">200(mm)</option>
-                </select>
-
-                <select id="phase" required name="Phase">
-                    <option value="Phase">Phase</option>
-                    <option value="Single Phase">Single Phase</option>
-                    <option value="Multi-dimension Phase">Multi-dimension Phase</option>
-                </select>
-
-                <br><br>
-
-                <h4 style="padding: 0px 10px;">Frequency*</h4>
-                <div style="margin-left: 10px;">
-                    <label for="50Hz">50Hz</label><input type="radio" name="Frequency" value="50Hz" required>
-                    <label for="60Hz">60Hz</label><input type="radio" name="Frequency" value="60Hz" required>
-                </div>
-                <br><br>
-
-                <div>
-                    <button id="button" type="submit">Submit</button>
-                </div>
-
             </form>
 
-            <br>
-            <div id="calculator" style="z-index: 1;">
+            <!-- Calculator Section -->
+            <div id="calculator" style="z-index: 1; display: none;">
                 <div id="calc-part">
-                    <h3>Pump Calculator</h3>
-                    <label for="flowRate">Flow Rate (gpm):</label>
-                    <input type="number" id="flowRate" required>
-                    <label for="pipeLength">Total Pipe Length (feet):</label>
-                    <input type="number" id="pipeLength" required>
-                    <label for="pipeDiameter">Nominal Pipe Diameter (inches):</label>
-                    <input type="number" id="pipeDiameter" required>
-                    <label for="totalLift">Total Pumping Lift (feet):</label>
-                    <input type="number" id="totalLift" required>
-                    <label for="miscHeadLoss">Miscellaneous Head Loss (feet):</label>
-                    <input type="number" id="miscHeadLoss" required>
-                    <label for="fitting45">Number of 45° Elbows:</label>
-                    <input type="number" id="fitting45" required value="0">
-                    <label for="fitting90">Number of 90° Elbows:</label>
-                    <input type="number" id="fitting90" required value="0">
-                    <label for="fittingTee">Number of Tees:</label>
-                    <input type="number" id="fittingTee" required value="0">
-                    <button onclick="calculate()">Calculate</button>
-                    <h2>Results</h2>
-                    <div id="results"></div>
+                    <h3>Pump Head Calculator</h3>
+                    <p class="calculator-description">Use this calculator to determine the required pump head based on your system parameters.</p>
 
-                    <script>
-                        function calculate() {
-                            const flowRateGPM = parseFloat(document.getElementById('flowRate').value);
-                            const pipeLength = parseFloat(document.getElementById('pipeLength').value);
-                            const pipeDiameterInches = parseFloat(document.getElementById('pipeDiameter').value);
-                            const totalLift = parseFloat(document.getElementById('totalLift').value);
-                            const miscHeadLoss = parseFloat(document.getElementById('miscHeadLoss').value);
-                            const fitting45 = parseInt(document.getElementById('fitting45').value);
-                            const fitting90 = parseInt(document.getElementById('fitting90').value);
-                            const fittingTee = parseInt(document.getElementById('fittingTee').value);
+                    <div class="form-group">
+                        <label for="flowRate">Flow Rate (gpm):</label>
+                        <input type="number" id="flowRate" class="form-control" required>
+                    </div>
 
-                            const flowRateCFS = (flowRateGPM * 0.133681) / 60;
-                            const pipeDiameterFeet = pipeDiameterInches / 12;
-                            const area = Math.PI * Math.pow(pipeDiameterFeet / 2, 2);
-                            const velocity = flowRateCFS / area;
+                    <div class="form-group">
+                        <label for="pipeLength">Total Pipe Length (feet):</label>
+                        <input type="number" id="pipeLength" class="form-control" required>
+                    </div>
 
-                            const frictionFactor = 0.02;
-                            const headLossPipe = frictionFactor * (pipeLength / pipeDiameterFeet) * Math.pow(velocity, 2) / (2 * 32.2);
-                            const fittingLoss45 = fitting45 * 0.3 * Math.pow(velocity, 2) / (2 * 32.2);
-                            const fittingLoss90 = fitting90 * 0.5 * Math.pow(velocity, 2) / (2 * 32.2);
-                            const fittingLossTee = fittingTee * 0.4 * Math.pow(velocity, 2) / (2 * 32.2);
-                            const fittingHeadLoss = fittingLoss45 + fittingLoss90 + fittingLossTee;
+                    <div class="form-group">
+                        <label for="pipeDiameter">Nominal Pipe Diameter (inches):</label>
+                        <input type="number" id="pipeDiameter" class="form-control" required>
+                    </div>
 
-                            const totalPumpHead = totalLift + headLossPipe + fittingHeadLoss + miscHeadLoss;
-                            const pressureLoss = totalPumpHead * 0.433;
+                    <div class="form-group">
+                        <label for="totalLift">Total Pumping Lift (feet):</label>
+                        <input type="number" id="totalLift" class="form-control" required>
+                    </div>
 
-                            function formatNumber(num) {
-                                return Math.floor(num);
-                            }
+                    <div class="form-group">
+                        <label for="miscHeadLoss">Miscellaneous Head Loss (feet):</label>
+                        <input type="number" id="miscHeadLoss" class="form-control" required>
+                    </div>
 
-                            document.getElementById('results').innerHTML = `
-                        Total Pump Head Required: ${formatNumber(totalPumpHead)} feet<br>
-                        Pressure Loss: ${formatNumber(pressureLoss)} psi
-                    `;
-                    document.getElementById("headMax").value = formatNumber(totalPumpHead);
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="fitting45">Number of 45° Elbows:</label>
+                            <input type="number" id="fitting45" class="form-control" required value="0">
+                        </div>
 
-                        }
-                    </script>
+                        <div class="form-group">
+                            <label for="fitting90">Number of 90° Elbows:</label>
+                            <input type="number" id="fitting90" class="form-control" required value="0">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="fittingTee">Number of Tees:</label>
+                            <input type="number" id="fittingTee" class="form-control" required value="0">
+                        </div>
+                    </div>
+
+                    <button onclick="calculate()" class="submit-btn">Calculate Head</button>
+
+                    <div id="results" class="calculator-results">
+                        <!-- Results will appear here -->
+                    </div>
+
+                    <button onclick="toggleCalculator()" class="submit-btn" style="background-color: #6c757d;">Close Calculator</button>
                 </div>
             </div>
+
+
         </main>
 
         <%- include('includes/footer')%>

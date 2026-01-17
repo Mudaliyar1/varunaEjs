@@ -31,7 +31,7 @@
     crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 
-    
+
   <script>
     $(document).ready(function () {
 
@@ -59,44 +59,238 @@
   </script>
 
   <style>
-
-.container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Adjust box size dynamically */
-    gap: 15px; /* Space between items */
-    padding: 15px;
-    justify-content: center;
-    place-items: center; /* Center items inside the grid */
-}
-
-.container .subContainer {
-    width: 100%; /* Adjust width based on grid */
-    max-width: 350px; /* Prevent it from being too large */
-    height: auto;
-    padding: 15px;
-    background-color: grey;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    border-radius: 4px;
-}
-
-img {
-    border-radius: 5px;
-    max-width: 100%; /* Make images responsive */
-    height: auto;
-}
-
-/* Mobile-specific fix */
-@media (max-width: 600px) {
-    .container {
-        display: flex;
-        flex-direction: column;
-        align-items: center; /* Ensures items are centered on small screens */
+    /* Product listing page styles */
+    .products-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
     }
-}
 
+    .products-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .products-title {
+      font-size: 32px;
+      color: #333;
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+
+    .products-subtitle {
+      font-size: 16px;
+      color: #666;
+      max-width: 700px;
+      margin: 0 auto 20px;
+    }
+
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #f8f9fa;
+      padding: 15px 20px;
+      border-radius: 8px;
+      margin-bottom: 30px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .filter-group {
+      display: flex;
+      align-items: center;
+      margin: 5px 10px 5px 0;
+    }
+
+    .filter-label {
+      font-weight: 500;
+      margin-right: 10px;
+      color: #555;
+    }
+
+    .filter-select {
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      background-color: white;
+      color: #333;
+      font-size: 14px;
+    }
+
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 25px;
+    }
+
+    .product-card {
+      background-color: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      transition: transform 0.3s, box-shadow 0.3s;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .product-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+    }
+
+    .product-image-container {
+      height: 220px;
+      overflow: hidden;
+      position: relative;
+      background-color: #f8f9fa;
+    }
+
+    .product-image {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      transition: transform 0.5s;
+    }
+
+    .product-card:hover .product-image {
+      transform: scale(1.05);
+    }
+
+    .product-info {
+      padding: 15px;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .product-name {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #333;
+      line-height: 1.4;
+      height: 45px;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+
+    .product-type {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 12px;
+    }
+
+    .product-specs {
+      display: flex;
+      flex-wrap: wrap;
+      margin-bottom: 15px;
+      flex-grow: 1;
+    }
+
+    .spec-item {
+      font-size: 13px;
+      color: #555;
+      background-color: #f0f0f0;
+      padding: 4px 8px;
+      border-radius: 4px;
+      margin: 0 5px 5px 0;
+    }
+
+    .product-action {
+      margin-top: auto;
+    }
+
+    .view-button {
+      display: inline-block;
+      width: 100%;
+      padding: 10px;
+      background-color: #dc3545;
+      color: white;
+      text-align: center;
+      text-decoration: none;
+      border-radius: 4px;
+      font-weight: 500;
+      transition: background-color 0.2s;
+    }
+
+    .view-button:hover {
+      background-color: #c82333;
+      text-decoration: none;
+      color: white;
+    }
+
+    /* Pagination styles */
+    .pagination-container {
+      display: flex;
+      justify-content: center;
+      margin-top: 40px;
+    }
+
+    .pagination {
+      display: flex;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .pagination li {
+      margin: 0 5px;
+    }
+
+    .pagination a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: #f8f9fa;
+      color: #333;
+      text-decoration: none;
+      transition: background-color 0.2s;
+    }
+
+    .pagination a:hover,
+    .pagination a.active {
+      background-color: #dc3545;
+      color: white;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .products-grid {
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        gap: 15px;
+      }
+
+      .filter-bar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .filter-group {
+        margin-bottom: 10px;
+        width: 100%;
+      }
+
+      .filter-select {
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .products-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .product-image-container {
+        height: 180px;
+      }
+    }
   </style>
 
 </head>
@@ -110,24 +304,121 @@ img {
     <br><br>
 
     <main>
+        <div class="products-container">
+            <div class="products-header">
+                <h1 class="products-title">Our Products</h1>
+                <p class="products-subtitle">Explore our range of high-quality pumps designed for various applications</p>
+            </div>
 
-        <div class="container">
-            <% products.forEach(product => { %>
-                <div class="subContainer">
-                        <img src="<%= product.input %>" alt="<%= product.type %>" style="width: 300px; height: 300px; object-fit: fill;">
-                        <br>
-                        <p style="text-align: justify;"><%= product.model || "N/A" %> - <%= product.type || "N/A" %></p>
-                        <a href="/product/<%= product._id %>" style="text-decoration: none; padding: 5px; width: 130px; height: 40px; background-color: red; align-content: center; text-align: center; border-radius: 8px; color: white;">View Product</a>
+            <div class="filter-bar">
+                <div class="filter-group">
+                    <label class="filter-label" for="type-filter">Product Type:</label>
+                    <select class="filter-select" id="type-filter">
+                        <option value="">All Types</option>
+                        <%
+                        // Extract unique product types
+                        const types = [...new Set(products.map(p => p.type).filter(Boolean))];
+                        types.forEach(type => { %>
+                            <option value="<%= type %>"><%= type %></option>
+                        <% }); %>
+                    </select>
                 </div>
+
+                <div class="filter-group">
+                    <label class="filter-label" for="sort-filter">Sort By:</label>
+                    <select class="filter-select" id="sort-filter">
+                        <option value="name-asc">Name (A-Z)</option>
+                        <option value="name-desc">Name (Z-A)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="products-grid" id="products-grid">
+                <% products.forEach(product => { %>
+                    <div class="product-card" data-type="<%= product.type || '' %>">
+                        <div class="product-image-container">
+                            <img class="product-image" src="<%= product.input || '/images/placeholder.jpg' %>" alt="<%= product.model || 'Product' %>">
+                        </div>
+                        <div class="product-info">
+                            <h3 class="product-name"><%= product.model || "N/A" %></h3>
+                            <div class="product-type"><%= product.type || "N/A" %></div>
+                            <div class="product-specs">
+                                <% if(product.head_meters && product.head_meters.length > 0) { %>
+                                    <span class="spec-item">Head: <%= product.head_meters[0] %>m</span>
+                                <% } %>
+                                <% if(product.discharge_lpm && product.discharge_lpm.length > 0) { %>
+                                    <span class="spec-item">Flow: <%= product.discharge_lpm[0] %> LPM</span>
+                                <% } %>
+                                <% if(product.motor_rating) { %>
+                                    <span class="spec-item"><%= product.motor_rating %></span>
+                                <% } %>
+                            </div>
+                            <div class="product-action">
+                                <a href="/product/<%= product._id %>" class="view-button">View Details</a>
+                            </div>
+                        </div>
+                    </div>
                 <% }) %>
+            </div>
+
+            <!-- Pagination - can be implemented if needed -->
+            <!-- <div class="pagination-container">
+                <ul class="pagination">
+                    <li><a href="#" class="active">1</a></li>
+                    <li><a href="#">2</a></li>
+                    <li><a href="#">3</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i></a></li>
+                </ul>
+            </div> -->
         </div>
 
+        <script>
+            // Filter functionality
+            $(document).ready(function() {
+                // Type filter
+                $('#type-filter').on('change', function() {
+                    const selectedType = $(this).val();
+
+                    if (selectedType === '') {
+                        // Show all products
+                        $('.product-card').show();
+                    } else {
+                        // Hide all products first
+                        $('.product-card').hide();
+                        // Show only products with matching type
+                        $('.product-card[data-type="' + selectedType + '"]').show();
+                    }
+                });
+
+                // Sort functionality
+                $('#sort-filter').on('change', function() {
+                    const sortValue = $(this).val();
+                    const $grid = $('#products-grid');
+                    const $products = $('.product-card').get();
+
+                    $products.sort(function(a, b) {
+                        const nameA = $(a).find('.product-name').text().toUpperCase();
+                        const nameB = $(b).find('.product-name').text().toUpperCase();
+
+                        if (sortValue === 'name-asc') {
+                            return nameA.localeCompare(nameB);
+                        } else {
+                            return nameB.localeCompare(nameA);
+                        }
+                    });
+
+                    $.each($products, function(i, product) {
+                        $grid.append(product);
+                    });
+                });
+            });
+        </script>
     </main>
 
 
 
 
-   
+
 
     <!-- footer code starts from here / footer code is on views/includes/footer.ejs -->
     <%- include('includes/footer')%>

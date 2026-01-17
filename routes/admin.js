@@ -20,33 +20,75 @@ router.get('/add', authenticateUser, authorizeRole(['admin']), async (req, res) 
 // Secure Product Addition
 router.post('/add', authenticateUser, authorizeRole(['admin']), async (req, res) => {
     try {
+        // Helper function to safely split comma-separated values
+        const safeSplit = (value, isNumber = false) => {
+            if (!value) return isNumber ? [] : [];
+            return value.split(",").map(item => {
+                const trimmed = item.trim();
+                return isNumber ? parseFloat(trimmed) : trimmed;
+            }).filter(item => isNumber ? !isNaN(item) : item !== "");
+        };
+
         const newProduct = new Product({
+            // Basic Information
             model: req.body.model,
+            pump_id: req.body.pump_id,
+            pump_app_name: req.body.pump_app_name,
+
+            // Group Information
+            group: req.body.group,
+            pump_sub_group: req.body.pump_sub_group,
+            pump_sub_group_name: req.body.pump_sub_group_name,
+
+            // Model Details
+            pump_model_name: req.body.pump_model_name,
+            type: req.body.type,
+            stages: req.body.stages ? parseInt(req.body.stages) : null,
+
+            // Performance Details
+            head_meters: safeSplit(req.body.head_meters, true),
+            discharge_lpm: safeSplit(req.body.discharge_lpm, true),
+            pump_discharge_type: req.body.pump_discharge_type,
+            pump_discharge_range: req.body.pump_discharge_range,
+            pump_rated_head: req.body.pump_rated_head,
+            pump_sp_gr: req.body.pump_sp_gr,
+
+            // Power & Electrical Details
             motor_rating: req.body.motor_rating,
-            stages: req.body.stages,
-            head_meters: req.body.head_meters.split(",").map(num => parseFloat(num.trim())),
-            discharge_lpm: req.body.discharge_lpm.split(",").map(num => parseFloat(num.trim())),
+            pump_power_hp: req.body.pump_power_hp,
+            pump_power_kw: req.body.pump_power_kw,
+            pump_voltage: req.body.pump_voltage,
+            pump_frequency: req.body.pump_frequency,
+            pump_power_supply: req.body.pump_power_supply,
+
+            // Physical Specifications
+            suction_size: req.body.suction_size,
+            pump_del_size: req.body.pump_del_size,
+            pump_priming_type: req.body.pump_priming_type,
+            material: req.body.material,
+
+            // Additional Information
             description: req.body.description,
             input: req.body.input,
-            salient_features: req.body.salient_features.split(",").map(str => str.trim()),
-            applications: req.body.applications.split(",").map(str => str.trim()),
-            material: req.body.material,
+            salient_features: safeSplit(req.body.salient_features),
+            applications: safeSplit(req.body.applications),
+
+            // Additional fields
             images: req.body.images ? req.body.images.split(",") : [],
             motor_details: req.body.motor_details,
             pump_details: req.body.pump_details,
-            group: req.body.group,
-            hertz: req.body.hertz,
-            suction_size: req.body.suction_size,
-            delivery_size: req.body.delivery_size,
-            voltage: req.body.voltage,
-            power_supply: req.body.power_supply,
-            type: req.body.type
+
+            // Metadata
+            created_at: new Date(),
+            updated_at: new Date(),
+            created_by: req.user ? req.user.username : 'admin'
         });
 
         await newProduct.save();
         res.redirect('/admin');
     } catch (error) {
-        res.status(500).send("Error adding product");
+        console.error("Error adding product:", error);
+        res.status(500).send("Error adding product: " + error.message);
     }
 });
 
@@ -66,33 +108,73 @@ router.get('/edit/:id', authenticateUser, authorizeRole(['admin']), async (req, 
 // Handle Product Update (Only for Admins)
 router.post('/edit/:id', authenticateUser, authorizeRole(['admin']), async (req, res) => {
     try {
+        // Helper function to safely split comma-separated values
+        const safeSplit = (value, isNumber = false) => {
+            if (!value) return isNumber ? [] : [];
+            return value.split(",").map(item => {
+                const trimmed = item.trim();
+                return isNumber ? parseFloat(trimmed) : trimmed;
+            }).filter(item => isNumber ? !isNaN(item) : item !== "");
+        };
+
         const updatedProduct = {
+            // Basic Information
             model: req.body.model,
+            pump_id: req.body.pump_id,
+            pump_app_name: req.body.pump_app_name,
+
+            // Group Information
+            group: req.body.group,
+            pump_sub_group: req.body.pump_sub_group,
+            pump_sub_group_name: req.body.pump_sub_group_name,
+
+            // Model Details
+            pump_model_name: req.body.pump_model_name,
+            type: req.body.type,
+            stages: req.body.stages ? parseInt(req.body.stages) : null,
+
+            // Performance Details
+            head_meters: safeSplit(req.body.head_meters, true),
+            discharge_lpm: safeSplit(req.body.discharge_lpm, true),
+            pump_discharge_type: req.body.pump_discharge_type,
+            pump_discharge_range: req.body.pump_discharge_range,
+            pump_rated_head: req.body.pump_rated_head,
+            pump_sp_gr: req.body.pump_sp_gr,
+
+            // Power & Electrical Details
             motor_rating: req.body.motor_rating,
-            stages: req.body.stages,
-            head_meters: req.body.head_meters.split(",").map(num => parseFloat(num.trim())),
-            discharge_lpm: req.body.discharge_lpm.split(",").map(num => parseFloat(num.trim())),
+            pump_power_hp: req.body.pump_power_hp,
+            pump_power_kw: req.body.pump_power_kw,
+            pump_voltage: req.body.pump_voltage,
+            pump_frequency: req.body.pump_frequency,
+            pump_power_supply: req.body.pump_power_supply,
+
+            // Physical Specifications
+            suction_size: req.body.suction_size,
+            pump_del_size: req.body.pump_del_size,
+            pump_priming_type: req.body.pump_priming_type,
+            material: req.body.material,
+
+            // Additional Information
             description: req.body.description,
             input: req.body.input,
-            salient_features: req.body.salient_features.split(",").map(str => str.trim()),
-            applications: req.body.applications.split(",").map(str => str.trim()),
-            material: req.body.material,
+            salient_features: safeSplit(req.body.salient_features),
+            applications: safeSplit(req.body.applications),
+
+            // Additional fields
             images: req.body.images ? req.body.images.split(",") : [],
             motor_details: req.body.motor_details,
             pump_details: req.body.pump_details,
-            group: req.body.group,
-            hertz: req.body.hertz,
-            suction_size: req.body.suction_size,
-            delivery_size: req.body.delivery_size,
-            voltage: req.body.voltage,
-            power_supply: req.body.power_supply,
-            type: req.body.type
+
+            // Metadata
+            updated_at: new Date()
         };
 
         await Product.findByIdAndUpdate(req.params.id, updatedProduct);
         res.redirect('/admin');
     } catch (error) {
-        res.status(500).send("Error updating product");
+        console.error("Error updating product:", error);
+        res.status(500).send("Error updating product: " + error.message);
     }
 });
 

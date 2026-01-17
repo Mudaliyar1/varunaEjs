@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MongoDB Schema Diagram</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 15px;
+        }
+        h2 {
+            color: #444;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        .diagram-container {
+            margin: 30px 0;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 5px rgba(0,0,0,0.05);
+        }
+        .note {
+            background-color: #f8f9fa;
+            border-left: 4px solid #007bff;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            color: #777;
+            font-size: 14px;
+        }
+        .schema-details {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .schema-details h3 {
+            margin-top: 0;
+            color: #0d6efd;
+        }
+        .schema-details ul {
+            padding-left: 20px;
+        }
+        .schema-details li {
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Varuna Pumps Web Application - MongoDB Schema Diagram</h1>
+
+        <div class="note">
+            <strong>Note:</strong> This diagram illustrates the MongoDB database schema for the Varuna Pumps web application, showing collections, fields, and relationships.
+        </div>
+
+        <h2>Database Schema</h2>
+        <div class="diagram-container">
+            <pre class="mermaid">
+            classDiagram
+                class User {
+                    +String username
+                    +String email
+                    +String password
+                    +String role
+                    +save()
+                }
+
+                class Suggestion {
+                    +String name
+                    +String mobileNo
+                    +String email
+                    +String state
+                    +String city
+                    +String district
+                    +String businessType
+                    +String findForm
+                    +String typeOfProducts
+                    +String head
+                    +String flow
+                    +String pipeSize
+                    +String phase
+                    +String frequency
+                    +Date createdAt
+                    +Boolean sentToCE
+                    +ObjectId ceAssigned
+                    +Boolean completed
+                    +String message
+                    +save()
+                }
+
+                class Product {
+                    // Basic Information
+                    +String model
+                    +String type
+                    +String description
+                    +String input
+                    +Array images
+
+                    // Product Identification
+                    +String pump_id
+                    +String pump_app_name
+                    +String pump_model_name
+
+                    // Group Information
+                    +String group
+                    +String pump_sub_group
+                    +String pump_sub_group_name
+
+                    // Performance Specifications
+                    +Number stages
+                    +Array head_meters
+                    +Array discharge_lpm
+                    +String pump_discharge_type
+                    +String pump_discharge_range
+                    +String pump_rated_head
+                    +String pump_sp_gr
+
+                    // Power & Electrical Details
+                    +String motor_rating
+                    +String pump_power_hp
+                    +String pump_power_kw
+                    +String pump_voltage
+                    +String pump_frequency
+                    +String pump_power_supply
+
+                    // Physical Specifications
+                    +String suction_size
+                    +String pump_del_size
+                    +String pump_priming_type
+                    +String material
+
+                    // Features and Applications
+                    +Array salient_features
+                    +Array applications
+
+                    // Additional Details
+                    +Map motor_details
+                    +Map pump_details
+
+                    // Reviews
+                    +Array reviews
+
+                    // Metadata
+                    +Date created_at
+                    +Date updated_at
+                    +String created_by
+                    +save()
+                }
+
+                class Review {
+                    +String user
+                    +Number rating
+                    +String comment
+                    +Date createdAt
+                }
+
+                User "1" <-- "many" Suggestion : ceAssigned references
+                Product "1" *-- "many" Review : embeds
+            </pre>
+        </div>
+
+        <div class="schema-details">
+            <h3>User Schema</h3>
+            <ul>
+                <li><strong>username</strong>: String (required) - User's display name</li>
+                <li><strong>email</strong>: String (required, unique) - User's email address for login</li>
+                <li><strong>password</strong>: String (required, hashed) - Securely stored password</li>
+                <li><strong>role</strong>: String (enum: ['admin', 'crm', 'ce', 'user'], default: 'user') - Access control role</li>
+            </ul>
+
+            <h3>Suggestion Schema</h3>
+            <ul>
+                <li><strong>name</strong>: String - Customer's full name</li>
+                <li><strong>mobileNo</strong>: String - Customer's contact number</li>
+                <li><strong>email</strong>: String - Customer's email address</li>
+                <li><strong>state, city, district</strong>: String - Customer's location details</li>
+                <li><strong>businessType</strong>: String - Type of customer's business</li>
+                <li><strong>findForm</strong>: String - How customer found the website</li>
+                <li><strong>typeOfProducts, head, flow, pipeSize, phase, frequency</strong>: String - Product requirements</li>
+                <li><strong>createdAt</strong>: Date (default: Date.now) - Submission timestamp</li>
+                <li><strong>sentToCE</strong>: Boolean (default: false) - Whether assigned to CE</li>
+                <li><strong>ceAssigned</strong>: ObjectId (ref: 'User') - Reference to CE user</li>
+                <li><strong>completed</strong>: Boolean (default: false) - Whether inquiry is resolved</li>
+                <li><strong>message</strong>: String - Additional notes</li>
+            </ul>
+
+            <h3>Product Schema</h3>
+            <ul>
+                <li><strong>Basic Information</strong>:
+                    <ul>
+                        <li><strong>model</strong>: String - Product model identifier</li>
+                        <li><strong>type</strong>: String - Type of product</li>
+                        <li><strong>description</strong>: String - Product description</li>
+                        <li><strong>input</strong>: String - Main product image URL</li>
+                        <li><strong>images</strong>: [String] - Additional product images</li>
+                    </ul>
+                </li>
+                <li><strong>Product Identification</strong>:
+                    <ul>
+                        <li><strong>pump_id</strong>: String - Unique identifier</li>
+                        <li><strong>pump_app_name</strong>: String - Application name</li>
+                        <li><strong>pump_model_name</strong>: String - Model name</li>
+                    </ul>
+                </li>
+                <li><strong>Performance Specifications</strong>:
+                    <ul>
+                        <li><strong>stages</strong>: Number - Number of pump stages</li>
+                        <li><strong>head_meters</strong>: [Number] - Head range in meters</li>
+                        <li><strong>discharge_lpm</strong>: [Number] - Flow rate in LPM</li>
+                        <li><strong>pump_discharge_type, pump_rated_head</strong>: String - Discharge specifications</li>
+                    </ul>
+                </li>
+                <li><strong>Physical & Electrical Details</strong>:
+                    <ul>
+                        <li><strong>motor_rating</strong>: String - Motor rating</li>
+                        <li><strong>pump_voltage, pump_frequency, pump_power_supply</strong>: String - Electrical specifications</li>
+                        <li><strong>suction_size, pump_del_size</strong>: String - Physical dimensions</li>
+                        <li><strong>material</strong>: String - Construction material</li>
+                    </ul>
+                </li>
+                <li><strong>reviews</strong>: [ReviewSchema] - Embedded customer reviews</li>
+                <li><strong>created_at, updated_at</strong>: Date - Timestamps</li>
+                <li><strong>created_by</strong>: String - Admin who created the product</li>
+            </ul>
+
+            <h3>Review Schema (Embedded in Product)</h3>
+            <ul>
+                <li><strong>user</strong>: String (required) - Reviewer's name</li>
+                <li><strong>rating</strong>: Number (required, min: 1, max: 5) - Star rating</li>
+                <li><strong>comment</strong>: String (required) - Review text</li>
+                <li><strong>createdAt</strong>: Date (default: Date.now) - Review timestamp</li>
+            </ul>
+        </div>
+
+        <h2>Entity Relationships</h2>
+        <div class="diagram-container">
+            <pre class="mermaid">
+            flowchart TD
+                A[User] -->|1:N| B[Suggestion]
+                C[Product] -->|1:N| D[Review]
+
+                subgraph "User Collection"
+                A
+                end
+
+                subgraph "Suggestion Collection"
+                B
+                end
+
+                subgraph "Product Collection"
+                C
+                D
+                end
+
+                classDef default fill:#f9f9f9,stroke:#333,stroke-width:1px;
+                classDef user fill:#e3f2fd,stroke:#0d6efd,stroke-width:2px;
+                classDef suggestion fill:#d4edda,stroke:#28a745,stroke-width:2px;
+                classDef product fill:#fff3cd,stroke:#ffc107,stroke-width:2px;
+                classDef review fill:#f8d7da,stroke:#dc3545,stroke-width:2px;
+
+                class A user;
+                class B suggestion;
+                class C product;
+                class D review;
+            </pre>
+        </div>
+
+        <h2>Data Flow in Application</h2>
+        <div class="diagram-container">
+            <pre class="mermaid">
+            flowchart TD
+                A[Customer] -->|Submits Inquiry| B[Suggestion Form]
+                B -->|Creates| C[Suggestion Document]
+                D[CRM User] -->|Reviews| C
+                D -->|Assigns to| E[CE User]
+                E -->|Handles| C
+                E -->|Updates Status| C
+
+                F[Admin] -->|Creates/Updates| G[Product Document]
+                H[Customer] -->|Views| G
+                H -->|Submits| I[Review]
+                I -->|Embedded in| G
+
+                classDef default fill:#f9f9f9,stroke:#333,stroke-width:1px;
+                classDef user fill:#e3f2fd,stroke:#0d6efd,stroke-width:2px;
+                classDef document fill:#d4edda,stroke:#28a745,stroke-width:2px;
+                classDef action fill:#fff3cd,stroke:#ffc107,stroke-width:2px;
+
+                class A,D,E,F,H user;
+                class C,G,I document;
+                class B action;
+            </pre>
+        </div>
+
+        <div class="footer">
+            <p>Varuna Pumps Web Application - Database Schema Documentation</p>
+        </div>
+    </div>
+
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            securityLevel: 'loose',
+            flowchart: {
+                useMaxWidth: true,
+                htmlLabels: true,
+                curve: 'basis'
+            }
+        });
+    </script>
+</body>
+</html>

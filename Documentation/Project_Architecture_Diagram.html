@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Architecture Diagram</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 15px;
+        }
+        h2 {
+            color: #444;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        .diagram-container {
+            margin: 30px 0;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 5px rgba(0,0,0,0.05);
+        }
+        .note {
+            background-color: #f8f9fa;
+            border-left: 4px solid #007bff;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            color: #777;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Varuna Pumps Web Application - Project Architecture</h1>
+        
+        <div class="note">
+            <strong>Note:</strong> This diagram illustrates the architecture of the Varuna Pumps web application, showing the folder structure, component relationships, and data flow.
+        </div>
+
+        <h2>Folder Structure</h2>
+        <div class="diagram-container">
+            <pre class="mermaid">
+            graph TD
+                A[varunaEjs] --> B[app.js]
+                A --> C[package.json]
+                A --> D[.env]
+                
+                A --> E[models/]
+                E --> E1[User.js]
+                E --> E2[Product.js]
+                E --> E3[Suggestion.js]
+                
+                A --> F[views/]
+                F --> F1[index.ejs]
+                F --> F2[product.ejs]
+                F --> F3[productMain.ejs]
+                F --> F4[suggestion.ejs]
+                F --> F5[admin.ejs]
+                F --> F6[adminProductList.ejs]
+                F --> F7[crm.ejs]
+                F --> F8[ce.ejs]
+                F --> F9[loginMain.ejs]
+                F --> F10[includes/]
+                F10 --> F10a[header.ejs]
+                F10 --> F10b[footer.ejs]
+                
+                A --> G[routes/]
+                G --> G1[index.js]
+                G --> G2[products.js]
+                G --> G3[admin.js]
+                G --> G4[auth.js]
+                G --> G5[crmRoutes.js]
+                G --> G6[ceRoutes.js]
+                G --> G7[suggestion.js]
+                
+                A --> H[middlewares/]
+                H --> H1[authMiddleware.js]
+                
+                A --> I[public/]
+                I --> I1[css/]
+                I1 --> I1a[style.css]
+                I1 --> I1b[utility.css]
+                I --> I2[js/]
+                I --> I3[images/]
+                
+                classDef default fill:#f9f9f9,stroke:#333,stroke-width:1px;
+                classDef highlight fill:#d4edda,stroke:#28a745,stroke-width:2px;
+                classDef file fill:#e3f2fd,stroke:#0d6efd,stroke-width:1px;
+                classDef folder fill:#fff3cd,stroke:#ffc107,stroke-width:1px;
+                
+                class B,C,D file;
+                class E,F,G,H,I,F10,I1,I2,I3 folder;
+                class E1,E2,E3,F1,F2,F3,F4,F5,F6,F7,F8,F9,F10a,F10b,G1,G2,G3,G4,G5,G6,G7,H1,I1a,I1b file;
+            </pre>
+        </div>
+
+        <h2>Application Flow</h2>
+        <div class="diagram-container">
+            <pre class="mermaid">
+            flowchart LR
+                A[Browser] -->|HTTP Request| B[Routes]
+                B -->|Process Request| C[Controllers]
+                C -->|Data Operations| D[Models]
+                D -->|Database Query| E[MongoDB]
+                E -->|Data| D
+                D -->|Results| C
+                C -->|Render View| F[EJS Templates]
+                F -->|HTML Response| A
+                
+                classDef default fill:#f9f9f9,stroke:#333,stroke-width:1px;
+                classDef client fill:#e3f2fd,stroke:#0d6efd,stroke-width:2px;
+                classDef server fill:#d4edda,stroke:#28a745,stroke-width:2px;
+                classDef database fill:#fff3cd,stroke:#ffc107,stroke-width:2px;
+                
+                class A client;
+                class B,C,D,F server;
+                class E database;
+            </pre>
+        </div>
+
+        <h2>Role-Based Access Control</h2>
+        <div class="diagram-container">
+            <pre class="mermaid">
+            flowchart TD
+                A[User Authentication] --> B{Role?}
+                B -->|Admin| C[Admin Dashboard]
+                B -->|CRM| D[CRM Dashboard]
+                B -->|CE| E[CE Dashboard]
+                B -->|User| F[Public Pages]
+                
+                C --> C1[Manage Products]
+                C --> C2[Register Users]
+                
+                D --> D1[View Inquiries]
+                D --> D2[Assign to CE]
+                
+                E --> E1[View Assignments]
+                E --> E2[Complete Inquiries]
+                
+                F --> F1[Browse Products]
+                F --> F2[Submit Inquiries]
+                F --> F3[Submit Reviews]
+                
+                classDef default fill:#f9f9f9,stroke:#333,stroke-width:1px;
+                classDef auth fill:#e3f2fd,stroke:#0d6efd,stroke-width:2px;
+                classDef admin fill:#d4edda,stroke:#28a745,stroke-width:2px;
+                classDef crm fill:#fff3cd,stroke:#ffc107,stroke-width:2px;
+                classDef ce fill:#f8d7da,stroke:#dc3545,stroke-width:2px;
+                classDef user fill:#d6d8db,stroke:#6c757d,stroke-width:2px;
+                
+                class A,B auth;
+                class C,C1,C2 admin;
+                class D,D1,D2 crm;
+                class E,E1,E2 ce;
+                class F,F1,F2,F3 user;
+            </pre>
+        </div>
+
+        <div class="footer">
+            <p>Varuna Pumps Web Application - Architecture Documentation</p>
+        </div>
+    </div>
+
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            securityLevel: 'loose',
+            flowchart: {
+                useMaxWidth: true,
+                htmlLabels: true,
+                curve: 'basis'
+            }
+        });
+    </script>
+</body>
+</html>

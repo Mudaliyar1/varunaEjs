@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Product List</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
     <style>
         /* Limit width and enable ellipsis */
         .truncate {
@@ -14,6 +15,41 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+        }
+        .table-responsive {
+            overflow-x: auto;
+        }
+        .action-buttons .btn {
+            margin-bottom: 5px;
+        }
+        .card {
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .filter-section {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #dee2e6;
+        }
+        .table-hover tbody tr:hover {
+            background-color: rgba(13, 110, 253, 0.1);
+        }
+        /* Empty field indicator */
+        .empty-field {
+            position: relative;
+        }
+        .empty-field::after {
+            content: "—";
+            color: #ccc;
+            font-style: italic;
+        }
+        /* Highlight incomplete rows */
+        .incomplete-row {
+            background-color: rgba(255, 243, 205, 0.4) !important;
+        }
+        .incomplete-row:hover {
+            background-color: rgba(255, 243, 205, 0.6) !important;
         }
     </style>
 
@@ -28,97 +64,158 @@
                 row.style.display = cellValue.includes(filterValue) ? "" : "none";
             });
         }
+
+        function toggleColumns() {
+            const selectedView = document.getElementById("columnView").value;
+            const allColumns = document.querySelectorAll('.toggle-column');
+
+            // Hide all columns first
+            allColumns.forEach(col => {
+                col.style.display = 'none';
+            });
+
+            // Show columns based on selected view
+            if (selectedView === 'basic') {
+                document.querySelectorAll('.basic-column').forEach(col => {
+                    col.style.display = '';
+                });
+            } else if (selectedView === 'technical') {
+                document.querySelectorAll('.technical-column').forEach(col => {
+                    col.style.display = '';
+                });
+            } else if (selectedView === 'all') {
+                allColumns.forEach(col => {
+                    col.style.display = '';
+                });
+            }
+        }
+
+        // Initialize column view on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            toggleColumns();
+        });
     </script>
 </head>
 
-<body>
+<body class="bg-light">
 
-    <div class="container mt-4">
+    <div class="container-fluid mt-4">
         <h1 class="text-center fw-bold mb-4">Admin Product List</h1>
 
         <div class="d-flex justify-content-between mb-3">
-            <h4>Products List</h4>
+            <h4><i class="bi bi-gear-fill me-2"></i>Products Management</h4>
             <div class="d-flex">
-                <a href="/admin/add" class="btn btn-success me-2">Add Product</a>
-                <a href="/auth/logout" class="btn btn-danger">Logout</a>
+                <a href="/admin/add" class="btn btn-success me-2"><i class="bi bi-plus-circle me-1"></i>Add Product</a>
+                <a href="/auth/logout" class="btn btn-danger"><i class="bi bi-box-arrow-right me-1"></i>Logout</a>
             </div>
         </div>
 
-        <!-- 🔹 Filter Section -->
-        <div class="row mb-3">
-            <div class="col-md-4">
-                <select id="filterType" class="form-select">
-                    <option value="model">Model</option>
-                    <option value="motor_rating">Motor Rating</option>
-                    <option value="stages">Stages</option>
-                    <option value="head_meters">Head Meters</option>
-                    <option value="discharge_lpm">Discharge LPM</option>
-                    <option value="description">Description</option>
-                    <option value="input">Input</option>
-                    <option value="salient_features">Features</option>
-                    <option value="applications">Applications</option>
-                    <option value="material">Material</option>
-                </select>
-            </div>
-            <div class="col-md-6">
-                <input type="text" id="filterInput" class="form-control" placeholder="Enter value to filter" onkeyup="filterTable()">
+        <!-- Enhanced Filter Section -->
+        <div class="filter-section">
+            <div class="row align-items-end">
+                <div class="col-md-3 mb-2">
+                    <label class="form-label">Filter By</label>
+                    <select id="filterType" class="form-select">
+                        <option value="model">Model</option>
+                        <option value="pump_id">Pump ID</option>
+                        <option value="pump_app_name">Application Name</option>
+                        <option value="group">Group</option>
+                        <option value="pump_sub_group">Sub Group</option>
+                        <option value="pump_model_name">Pump Model Name</option>
+                        <option value="type">Type</option>
+                        <option value="motor_rating">Motor Rating</option>
+                        <option value="pump_power_hp">Power (HP)</option>
+                        <option value="pump_power_kw">Power (kW)</option>
+                        <option value="stages">Stages</option>
+                        <option value="head_meters">Head Meters</option>
+                        <option value="discharge_lpm">Discharge LPM</option>
+                    </select>
+                </div>
+                <div class="col-md-5 mb-2">
+                    <label class="form-label">Search</label>
+                    <input type="text" id="filterInput" class="form-control" placeholder="Enter value to filter" onkeyup="filterTable()">
+                </div>
+                <div class="col-md-3 mb-2">
+                    <label class="form-label">Column View</label>
+                    <select id="columnView" class="form-select" onchange="toggleColumns()">
+                        <option value="basic">Basic Info</option>
+                        <option value="technical">Technical Details</option>
+                        <option value="all">All Columns</option>
+                    </select>
+                </div>
+                <div class="col-md-1 mb-2">
+                    <button class="btn btn-primary w-100" onclick="filterTable()"><i class="bi bi-search"></i></button>
+                </div>
             </div>
         </div>
 
         <div class="card">
-            <div class="card-body">
+            <div class="card-body p-0">
                 <% if (products.length === 0) { %>
-                    <p class="text-center text-muted">No products available.</p>
+                    <div class="alert alert-info m-3">No products available. <a href="/admin/add" class="alert-link">Add a product</a>.</div>
                 <% } else { %>
-                    <table class="table table-striped">
-                        <thead class="table-dark">
-                            <tr>
-                                <th>#</th>
-                                <th>Model</th>
-                                <th>Motor Rating</th>
-                                <th>Stages</th>
-                                <th>Head Meters</th>
-                                <th>Discharge LPM</th>
-                                <th>Description</th>
-                                <th>Input</th>
-                                <th>Features</th>
-                                <th>Applications</th>
-                                <th>Material</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <% products.forEach((product, index) => { %>
+                    <div class="alert alert-warning m-3">
+                        <i class="bi bi-info-circle-fill me-2"></i>
+                        <strong>Note:</strong> Highlighted rows have missing important information. Empty fields are marked with a dash (<span style="color: #ccc; font-style: italic;">—</span>). Please edit these products to complete their information.
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover mb-0">
+                            <thead class="table-dark">
                                 <tr>
-                                    <td><%= index + 1 %></td>
-                                    <td data-filter="model"><strong><%= product.model || "N/A" %></strong></td>
-                                    <td data-filter="motor_rating"><%= product.motor_rating || "N/A" %></td>
-                                    <td data-filter="stages"><%= product.stages || "N/A" %></td>
-                                    <td data-filter="head_meters"><%= product.head_meters ? product.head_meters.join(", ") : "N/A" %></td>
-                                    <td data-filter="discharge_lpm"><%= product.discharge_lpm ? product.discharge_lpm.join(", ") : "N/A" %></td>
-                                    
-                                    <!-- 🔹 Truncated Description -->
-                                    <td class="truncate" data-filter="description" title="<%= product.description %>">
-                                        <%= product.description || "N/A" %>
-                                    </td>
-
-                                    <td data-filter="input"><%= product.input || "N/A" %></td>
-
-                                    <!-- 🔹 Truncated Features -->
-                                    <td class="truncate" data-filter="salient_features" title="<%= product.salient_features ? product.salient_features.join(', ') : 'N/A' %>">
-                                        <%= product.salient_features ? product.salient_features.join(", ") : "N/A" %>
-                                    </td>
-
-                                    <td data-filter="applications"><%= product.applications ? product.applications.join(", ") : "N/A" %></td>
-                                    <td data-filter="material"><%= product.material || "N/A" %></td>
-                                    <td>
-                                        <a href="/admin/edit/<%= product._id %>" class="btn btn-sm btn-warning">Edit</a>
-                                        <a href="/admin/delete/<%= product._id %>" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">Delete</a>
-                                    </td>
+                                    <th class="basic-column toggle-column">#</th>
+                                    <th class="basic-column toggle-column">Pump ID</th>
+                                    <th class="basic-column toggle-column">Model</th>
+                                    <th class="basic-column toggle-column">Application</th>
+                                    <th class="basic-column toggle-column">Group</th>
+                                    <th class="basic-column toggle-column">Sub Group</th>
+                                    <th class="technical-column toggle-column">Power (HP)</th>
+                                    <th class="technical-column toggle-column">Power (kW)</th>
+                                    <th class="technical-column toggle-column">Stages</th>
+                                    <th class="technical-column toggle-column">Head Range</th>
+                                    <th class="technical-column toggle-column">Discharge Range</th>
+                                    <th class="technical-column toggle-column">Voltage</th>
+                                    <th class="technical-column toggle-column">Frequency</th>
+                                    <th class="technical-column toggle-column">Delivery Size</th>
+                                    <th class="basic-column toggle-column">Actions</th>
                                 </tr>
-                            <% }); %>
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                <% products.forEach((product, index) => {
+                                    // Check if important fields are missing
+                                    const isIncomplete = !product.pump_id || !product.pump_app_name || !product.group || !product.pump_sub_group;
+                                %>
+                                    <tr class="<%= isIncomplete ? 'incomplete-row' : '' %>">
+                                        <td class="basic-column toggle-column"><%= index + 1 %></td>
+                                        <td class="basic-column toggle-column <%= !product.pump_id ? 'empty-field' : '' %>" data-filter="pump_id"><%= product.pump_id || "" %></td>
+                                        <td class="basic-column toggle-column <%= !product.model ? 'empty-field' : '' %>" data-filter="model"><strong><%= product.model || "" %></strong></td>
+                                        <td class="basic-column toggle-column <%= !product.pump_app_name ? 'empty-field' : '' %>" data-filter="pump_app_name"><%= product.pump_app_name || "" %></td>
+                                        <td class="basic-column toggle-column <%= !product.group ? 'empty-field' : '' %>" data-filter="group"><%= product.group || "" %></td>
+                                        <td class="basic-column toggle-column <%= !product.pump_sub_group ? 'empty-field' : '' %>" data-filter="pump_sub_group"><%= product.pump_sub_group || "" %></td>
+                                        <td class="technical-column toggle-column <%= !product.pump_power_hp ? 'empty-field' : '' %>" data-filter="pump_power_hp"><%= product.pump_power_hp || "" %></td>
+                                        <td class="technical-column toggle-column <%= !product.pump_power_kw ? 'empty-field' : '' %>" data-filter="pump_power_kw"><%= product.pump_power_kw || "" %></td>
+                                        <td class="technical-column toggle-column <%= !product.stages ? 'empty-field' : '' %>" data-filter="stages"><%= product.stages || "" %></td>
+                                        <td class="technical-column toggle-column <%= !(product.head_meters && product.head_meters.length) && !product.pump_rated_head ? 'empty-field' : '' %>" data-filter="head_meters">
+                                            <%= product.head_meters ? product.head_meters.join(", ") : (product.pump_rated_head || "") %>
+                                        </td>
+                                        <td class="technical-column toggle-column <%= !(product.discharge_lpm && product.discharge_lpm.length) && !product.pump_discharge_range ? 'empty-field' : '' %>" data-filter="discharge_lpm">
+                                            <%= product.discharge_lpm ? product.discharge_lpm.join(", ") : (product.pump_discharge_range || "") %>
+                                        </td>
+                                        <td class="technical-column toggle-column <%= !product.pump_voltage && !product.voltage ? 'empty-field' : '' %>" data-filter="pump_voltage"><%= product.pump_voltage || product.voltage || "" %></td>
+                                        <td class="technical-column toggle-column <%= !product.pump_frequency && !product.hertz ? 'empty-field' : '' %>" data-filter="pump_frequency"><%= product.pump_frequency || product.hertz || "" %></td>
+                                        <td class="technical-column toggle-column <%= !product.pump_del_size && !product.delivery_size ? 'empty-field' : '' %>" data-filter="pump_del_size"><%= product.pump_del_size || product.delivery_size || "" %></td>
+                                        <td class="basic-column toggle-column action-buttons">
+                                            <% if (isIncomplete) { %>
+                                                <a href="/admin/edit/<%= product._id %>" class="btn btn-sm btn-primary mb-1 w-100"><i class="bi bi-pencil-square me-1"></i>Complete Info</a>
+                                            <% } else { %>
+                                                <a href="/admin/edit/<%= product._id %>" class="btn btn-sm btn-warning mb-1 w-100"><i class="bi bi-pencil-square me-1"></i>Edit</a>
+                                            <% } %>
+                                            <a href="/admin/delete/<%= product._id %>" class="btn btn-sm btn-danger w-100" onclick="return confirm('Are you sure you want to delete this product?')"><i class="bi bi-trash me-1"></i>Delete</a>
+                                        </td>
+                                    </tr>
+                                <% }); %>
+                            </tbody>
+                        </table>
+                    </div>
                 <% } %>
             </div>
         </div>

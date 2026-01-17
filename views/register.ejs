@@ -1,53 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register User</title>
-    <style>
-        body{
-            background-color: grey;
-        }
-        form>div{
-            display: flex;
-            align-items: center;
-            flex-direction: column;
-            justify-content: center;
-            gap: 20px;
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50% , -50%);
-            padding: 10px;
-            border: 1px solid ;
-            width: 300px;
-            border-radius: 8px;
-            background-color: lightgray;
-        }
-
-        h4 {
-            font-family: sans-serif;
-        }
-        input{
-            width: 200px;
-            background-color: transparent;
-            outline: none;
-            border: 1px solid black;
-            padding: 5px;
-            border-radius: 6px;
-        }
-        button{
-            width: 150px;
-            /* height: 30px; */
-            border: none;
-            background-color: red;
-            color: white;
-            border-radius: 8px;
-            padding: 10px
-        }
-    </style>
-</head>
+<% 
+  const title = 'Register - Varuna Electric';
+  const pageStyles = [];
+%>
+<%- include('includes/layout-head', { title: title, pageStyles: pageStyles }) %>
 
 <body>
     <% if (message) { %>
